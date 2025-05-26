@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BIP Widget Demo - Push Pattern</title>
+    <title>BIP Widget Demo - Manual Init Pattern</title>
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -110,99 +110,274 @@
         background: #28a745;
         color: white;
       }
+      .button-group {
+        margin-bottom: 15px;
+      }
+      .button-group h4 {
+        margin-bottom: 8px;
+        color: #495057;
+      }
     </style>
   </head>
   <body>
     <div class="container">
-      <h1>🤖 BIP Widget Demo - Push Pattern</h1>
+      <h1>🤖 BIP Widget Demo - Manual Init Pattern</h1>
       <p>Open console to see commands being processed.</p>
 
       <div class="demo-section">
-        <h3>Stav Widgetu</h3>
-        <div id="status" class="status warning">⏳ Načítám widget...</div>
+        <h3>Widget Status</h3>
+        <div id="status" class="status warning">⏳ Initializing widget...</div>
       </div>
 
       <div class="demo-grid">
-        <!-- Default floating button mode -->
         <div class="demo-card" id="defaultCard">
-          <div class="mode-indicator default">VÝCHOZÍ REŽIM</div>
-          <h4>🔵 Způsob 1: Výchozí plovoucí tlačítko</h4>
+          <div class="mode-indicator default">DEFAULT MODE</div>
+          <h4>🔵 Method 1: Default floating button</h4>
           <p>
-            Widget zobrazuje svou vlastní modrou ikonku v pravém dolním rohu.
+            The widget displays its own blue icon in the bottom right corner.
           </p>
-          <button onclick="enableDefaultMode()" class="switch-mode">
-            🔄 Aktivovat tento režim
+          <button onclick="enableMode(true)" class="switch-mode">
+            🔄 Activate this mode
           </button>
           <br /><br />
-          <button onclick="openWidget()">🔓 Otevřít chat (API)</button>
-          <button onclick="closeWidget()">🔒 Zavřít chat (API)</button>
+          <button onclick="openWidget()">🔓 Open chat (API)</button>
+          <button onclick="closeWidget()">🔒 Close chat (API)</button>
         </div>
 
-        <!-- Custom trigger mode -->
         <div class="demo-card" id="customCard">
-          <div class="mode-indicator custom">VLASTNÍ REŽIM</div>
-          <h4>🟢 Způsob 2: Vlastní trigger</h4>
-          <p>Widget skryje výchozí ikonku. Klient používá vlastní tlačítka.</p>
-          <button onclick="enableCustomMode()" class="switch-mode">
-            🔄 Aktivovat tento režim
+          <div class="mode-indicator custom">CUSTOM MODE</div>
+          <h4>🟢 Method 2: Custom trigger</h4>
+          <p>
+            The widget hides the default icon. The client uses custom buttons.
+          </p>
+          <button onclick="enableMode(false)" class="switch-mode">
+            🔄 Activate this mode
           </button>
           <br /><br />
           <button onclick="openWidget()" class="custom-trigger">
-            💬 Vlastní chat trigger
+            💬 Custom chat trigger
           </button>
-          <button onclick="closeWidget()">🔒 Zavřít chat</button>
+          <button onclick="closeWidget()">🔒 Close chat</button>
         </div>
       </div>
 
       <div class="demo-section">
-        <h3>🧠 Context Examples & Manager</h3>
-        <button onclick="addUserContext()">👤 User context</button>
-        <button onclick="addPageContext()">📄 Page context</button>
-        <br /><br />
-        <button onclick="getAllContexts()">📋 Všetky kontexty</button>
-        <button onclick="searchContexts()">🔍 Vyhľadať kontexty</button>
-        <button onclick="clearAllContexts()">🗑️ Vymazať všetky</button>
-        <button onclick="showHelp()">📚 Zobraziť pomocník</button>
+        <h3>⚙️ Widget API Examples</h3>
+        <div class="button-group">
+          <h4>⚙️ Configuration (after initialization)</h4>
+          <button onclick="reInitDefault()">🔄 Re-init (default)</button>
+          <button onclick="reInitCustom()">🎨 Re-init (custom trigger)</button>
+          <button onclick="reInitDarkTheme()">🌙 Re-init (dark theme)</button>
+        </div>
+        <div class="button-group">
+          <h4>🧠 Context</h4>
+          <button onclick="addUserContext()">👤 User context</button>
+          <button onclick="addPageContext()">📄 Page context</button>
+          <button onclick="getAllContexts()">📋 All contexts</button>
+          <button onclick="searchContexts()">🔍 Search contexts</button>
+          <button onclick="clearAllContexts()">🗑️ Clear all</button>
+        </div>
+        <div class="button-group">
+          <h4>🤖 Assistant & Conversation</h4>
+          <button onclick="setAssistantId()">🤖 Set Assistant ID</button>
+          <button onclick="getAssistantId()">🧐 Get Assistant ID</button>
+          <button onclick="addMessage()">➕ Add message</button>
+          <button onclick="getMessages()">💬 Get messages</button>
+          <button onclick="getConversationState()">
+            📋 Get conversation state
+          </button>
+        </div>
+        <div class="button-group">
+          <h4>🛠️ Other</h4>
+          <button onclick="showHelp()">📚 Show help</button>
+        </div>
       </div>
     </div>
 
-    <!-- Initialize BIP queue early -->
-    <script>
-      window.BIP = window.BIP || [];
-      BIP.push(["init", { showDefaultTrigger: true }]);
-    </script>
-
-    <!-- Load widget script -->
-    <!-- <script src="./dist/widget.iife.js"></script> -->
+    <!-- Load widget script FIRST -->
     <script src="https://chat-widget-test.hc1.blogic.ai/widget.iife.js"></script>
 
     <script>
-      let currentMode = "default";
+      let bipWidgetInstance = null; // This will hold the widget instance
+      let currentModeIsDefault = true; // For demo UI
 
-      // Widget mode management
-      function enableDefaultMode() {
-        console.log("Switching to DEFAULT mode");
-        currentMode = "default";
-        updateModeIndicators();
-        BIP.push(["close"]);
-        setTimeout(() => BIP.push(["init", { showDefaultTrigger: true }]), 100);
+      function initializeApp() {
+        const widgetFactory = window.BIPWidget; // As per vite.config.js name: 'BIPWidget'
+
+        if (
+          widgetFactory &&
+          typeof widgetFactory.createBIPWidget === "function"
+        ) {
+          bipWidgetInstance = widgetFactory.createBIPWidget();
+
+          // Initial configuration for the widget
+          const initialConfig = {
+            showDefaultTrigger: currentModeIsDefault,
+            assistantId: "initial_assistant",
+            // theme: 'light', // example
+            // position: 'bottom-right' // example
+          };
+
+          bipWidgetInstance.init(initialConfig);
+          console.log(
+            "✅ BIP Widget instance created and initialized:",
+            bipWidgetInstance
+          );
+          document.getElementById("status").textContent =
+            "✅ Widget ready (manual init)";
+          document.getElementById("status").className = "status success";
+
+          setupEventListeners(bipWidgetInstance);
+          updateModeIndicators();
+        } else {
+          console.error(
+            "window.BIPWidget.createBIPWidget is not available. Widget script might have failed or not exported correctly."
+          );
+          document.getElementById("status").textContent =
+            "❌ Error: Widget failed to load.";
+          document.getElementById("status").className = "status error";
+        }
+        console.log("Demo page scripts processed.");
       }
 
-      function enableCustomMode() {
-        console.log("Switching to CUSTOM mode");
-        currentMode = "custom";
-        updateModeIndicators();
-        BIP.push(["close"]);
-        setTimeout(
-          () => BIP.push(["init", { showDefaultTrigger: false }]),
-          100
+      if (
+        document.readyState === "loading" ||
+        document.readyState === "interactive"
+      ) {
+        window.addEventListener("DOMContentLoaded", initializeApp);
+      } else {
+        setTimeout(initializeApp, 0);
+      }
+
+      // Helper to process commands if instance exists
+      function processWidgetCommand(command, ...args) {
+        if (!bipWidgetInstance) {
+          console.error(
+            "Widget instance not available to process command:",
+            command
+          );
+          alert("Widget is not initialized!");
+          return;
+        }
+        console.log(
+          `🔵 Calling on instance: ${command}`,
+          args.length > 0 ? args : ""
         );
+        const statusDiv = document.getElementById("status");
+        statusDiv.textContent = `🚀 Calling: ${command}`;
+        statusDiv.className = "status warning";
+        bipWidgetInstance.processCommand([command, ...args]);
+      }
+
+      // --- Widget control functions ---
+      function openWidget() {
+        processWidgetCommand("open");
+      }
+      function closeWidget() {
+        processWidgetCommand("close");
+      }
+
+      // --- Re-init examples ---
+      function reInitDefault() {
+        processWidgetCommand("init", {
+          showDefaultTrigger: true,
+          theme: "light",
+          assistantId: "reinit_default_assistant",
+        });
+        currentModeIsDefault = true;
+        updateModeIndicators();
+      }
+      function reInitCustom() {
+        processWidgetCommand("init", {
+          showDefaultTrigger: false,
+          theme: "light",
+          assistantId: "reinit_custom_assistant",
+        });
+        currentModeIsDefault = false;
+        updateModeIndicators();
+      }
+      function reInitDarkTheme() {
+        processWidgetCommand("init", { theme: "dark" });
+      }
+
+      // --- Context functions ---
+      function addUserContext() {
+        processWidgetCommand("setContext", "user_profile", {
+          userId: "demoUserManual123",
+          name: "Maria Manual",
+          email: "maria.manual@example.com",
+          registeredAt: new Date().toISOString(),
+          permissions: ["read", "edit"],
+        });
+      }
+      function addPageContext() {
+        processWidgetCommand("setContextAuto", {
+          pageUrl: window.location.href,
+          pageTitle: document.title,
+          timestamp: new Date().toISOString(),
+        });
+      }
+      function getAllContexts() {
+        processWidgetCommand("getContext");
+      }
+      function searchContexts() {
+        const query = prompt("Enter search term for context:", "Maria");
+        if (query) processWidgetCommand("searchContext", query);
+      }
+      function clearAllContexts() {
+        if (confirm("Really clear all contexts?")) {
+          processWidgetCommand("clearContext");
+        }
+      }
+
+      // --- Assistant & Conversation functions ---
+      function setAssistantId() {
+        const newId = prompt("Enter new assistant ID:", "manual_assistant_2");
+        if (newId) processWidgetCommand("setAssistantId", newId);
+      }
+      function getAssistantId() {
+        processWidgetCommand("getAssistantId");
+      }
+      function addMessage() {
+        const text = prompt(
+          "Enter message text (user):",
+          "Hello from manual init!"
+        );
+        if (text) {
+          processWidgetCommand("addMessage", { type: "user", text: text });
+        }
+      }
+      function getMessages() {
+        processWidgetCommand("getMessages");
+      }
+      function getConversationState() {
+        processWidgetCommand("getConversationState");
+      }
+      function showHelp() {
+        processWidgetCommand("help");
+      }
+
+      // --- Demo page UI update functions ---
+      function enableMode(isDefault) {
+        currentModeIsDefault = isDefault;
+        console.log(
+          `Switching UI to ${
+            isDefault ? "DEFAULT" : "CUSTOM"
+          } mode for demo page.`
+        );
+        // Re-initialize the widget with the new showDefaultTrigger setting
+        processWidgetCommand("init", {
+          showDefaultTrigger: isDefault,
+          assistantId: isDefault ? "default_id_reinit" : "custom_id_reinit",
+        });
+        updateModeIndicators();
       }
 
       function updateModeIndicators() {
         const defaultCard = document.getElementById("defaultCard");
         const customCard = document.getElementById("customCard");
-        if (currentMode === "default") {
+        if (!defaultCard || !customCard) return;
+        if (currentModeIsDefault) {
           defaultCard.classList.add("active");
           customCard.classList.remove("active");
         } else {
@@ -211,135 +386,31 @@
         }
       }
 
-      function openWidget() {
-        console.log("Opening widget");
-        BIP.push(["open"]);
-      }
-
-      function closeWidget() {
-        console.log("Closing widget");
-        BIP.push(["close"]);
-      }
-
-      // Context examples
-      function addUserContext() {
-        console.log("👤 Adding user context");
-        BIP.push([
-          "setContext",
-          "user_profile", // key first
-          {
-            userId: "user_123",
-            name: "Jan Novák",
-            email: "jan.novak@example.com",
-            role: "admin",
-          },
-        ]);
-      }
-
-      function addPageContext() {
-        console.log("📄 Adding page context");
-        BIP.push([
-          "setContext",
-          "current_page", // key first
-          {
-            url: window.location.href,
-            title: document.title,
-            timestamp: new Date().toISOString(),
-          },
-        ]);
-      }
-
-      // Context manager
-      function getAllContexts() {
-        console.log("📋 Getting all contexts");
-        BIP.push(["getContext"]);
-      }
-
-      function searchContexts() {
-        const query = prompt("Zadajte vyhľadávací výraz:", "user");
-        if (query) {
-          console.log(`🔍 Searching for: "${query}"`);
-          BIP.push(["searchContext", query]);
-        }
-      }
-
-      function clearAllContexts() {
-        if (confirm("Naozaj chcete vymazať všetky kontexty?")) {
-          console.log("🗑️ Clearing all contexts");
-          BIP.push(["clearContext"]);
-        }
-      }
-
-      function showHelp() {
-        console.log("📚 Showing help");
-        BIP.push(["help"]);
-      }
-
-      // Event listeners setup
-      function setupContextEventListeners() {
-        setTimeout(() => {
-          if (window.BIP && window.BIP._widget) {
-            const widget = window.BIP._widget;
-            console.log("✅ Context event listeners setup");
-
-            widget.addEventListener("contextResult", (event) => {
-              const { action, data, success, query } = event.detail;
-
-              switch (action) {
-                case "getAll":
-                  console.log("📋 Všetky kontexty:", data);
-                  data.forEach((item, index) => {
-                    console.log(
-                      `${index + 1}. ${item.id}: ${JSON.stringify(item.data)}`
-                    );
-                  });
-                  break;
-
-                case "search":
-                  console.log(
-                    `🔍 Nájdených ${data.length} kontextov pre "${query}"`
-                  );
-                  data.forEach((item, index) => {
-                    console.log(
-                      `${index + 1}. ${item.id}: ${JSON.stringify(item.data)}`
-                    );
-                  });
-                  break;
-
-                case "clearAll":
-                  console.log("🗑️ Všetky kontexty vymazané");
-                  break;
-
-                case "help":
-                  console.log(
-                    "📚 Dostupné príkazy:",
-                    data.map((cmd) => cmd.command).join(", ")
-                  );
-                  break;
-              }
-            });
+      function setupEventListeners(widgetInstance) {
+        if (!widgetInstance) return;
+        const eventHandler = (event) => {
+          console.log("✅ Widget event:", event.type, event.detail);
+          const statusDiv = document.getElementById("status");
+          if (statusDiv) {
+            statusDiv.textContent = `🔔 Event: ${event.type} - ${JSON.stringify(
+              event.detail
+            )}`;
+            statusDiv.className = "status success";
           }
-        }, 1000);
+        };
+        const eventTypes = [
+          "open",
+          "close",
+          "context",
+          "contextResult",
+          "conversationQueryResult",
+          "helpResult",
+        ];
+        eventTypes.forEach((type) => {
+          widgetInstance.addEventListener(type, eventHandler);
+        });
+        console.log("✅ Widget event listeners setup on bipWidgetInstance");
       }
-
-      // Status check
-      function updateStatus() {
-        const statusElement = document.getElementById("status");
-        if (typeof window.BIP !== "undefined") {
-          statusElement.className = "status success";
-          statusElement.textContent = "✅ Widget načten a připraven";
-        } else {
-          statusElement.className = "status error";
-          statusElement.textContent = "❌ Widget se nepodařilo načíst";
-        }
-      }
-
-      // Initialize
-      updateModeIndicators();
-      setTimeout(updateStatus, 2000);
-      setupContextEventListeners();
-
-      console.log("Demo page loaded, BIP queue initialized");
     </script>
   </body>
 </html>
