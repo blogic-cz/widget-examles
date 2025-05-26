@@ -3,7 +3,9 @@ name: Deploy Demo to GitHub Pages
 on:
   push:
     branches:
-      - main # Or your default branch
+      - main
+    paths:
+      - demo.test.html # Only trigger when this specific file changes
   workflow_dispatch: # Allows manual triggering
 
 permissions:
