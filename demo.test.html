@@ -172,7 +172,6 @@
         <div class="button-group">
           <h4>🧠 Context</h4>
           <button onclick="addUserContext()">👤 User context</button>
-          <button onclick="addPageContext()">📄 Page context</button>
           <button onclick="getAllContexts()">📋 All contexts</button>
           <button onclick="searchContexts()">🔍 Search contexts</button>
           <button onclick="clearAllContexts()">🗑️ Clear all</button>
@@ -308,13 +307,6 @@
           email: "maria.manual@example.com",
           registeredAt: new Date().toISOString(),
           permissions: ["read", "edit"],
-        });
-      }
-      function addPageContext() {
-        processWidgetCommand("setContextAuto", {
-          pageUrl: window.location.href,
-          pageTitle: document.title,
-          timestamp: new Date().toISOString(),
         });
       }
       function getAllContexts() {

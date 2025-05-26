@@ -48,16 +48,24 @@ BIP.push([
 
 ## 📋 Available Commands
 
-| Command        | Description                          | Example                                            |
-| -------------- | ------------------------------------ | -------------------------------------------------- |
-| `init`         | Initialize widget with configuration | `BIP.push(["init", { showDefaultTrigger: true }])` |
-| `open`         | Open the chat widget                 | `BIP.push(["open"])`                               |
-| `close`        | Close the chat widget                | `BIP.push(["close"])`                              |
-| `setContext`   | Add context data for AI              | `BIP.push(["setContext", "key", data])`            |
-| `getContext`   | Retrieve all contexts                | `BIP.push(["getContext"])`                         |
-| `clearContext` | Clear all contexts                   | `BIP.push(["clearContext"])`                       |
+| Command                | Description                                                                | Example                                                                      |
+| ---------------------- | -------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `init`                 | Initialize widget with configuration                                       | `BIP.push(["init", { showDefaultTrigger: true }])`                           |
+| `open`                 | Open the chat widget                                                       | `BIP.push(["open"])`                                                         |
+| `close`                | Close the chat widget                                                      | `BIP.push(["close"])`                                                        |
+| `setContext`           | Add or update context data (ID, data object)                               | `BIP.push(["setContext", "user_profile", { name: "John" }])`                 |
+| `getContext`           | Retrieve a specific context by ID, or all contexts if ID is omitted        | `BIP.push(["getContext", "user_profile"])` or `BIP.push(["getContext"])`     |
+| `clearContext`         | Clear a specific context by ID, or all contexts if ID is omitted           | `BIP.push(["clearContext", "user_profile"])` or `BIP.push(["clearContext"])` |
+| `searchContext`        | Search within stored contexts using a query string                         | `BIP.push(["searchContext", "find_this_text"])`                              |
+| `removeContext`        | Remove a specific context by its ID                                        | `BIP.push(["removeContext", "context_id_to_delete"])`                        |
+| `setAssistantId`       | Set the Assistant ID for the conversation                                  | `BIP.push(["setAssistantId", "your_assistant_id"])`                          |
+| `getAssistantId`       | Get the current Assistant ID                                               | `BIP.push(["getAssistantId"])`                                               |
+| `addMessage`           | Add a message to the conversation history (e.g., prefill user input)       | `BIP.push(["addMessage", { role: "user", content: "Hello there!" }])`        |
+| `getMessages`          | Retrieve all messages in the current conversation                          | `BIP.push(["getMessages"])`                                                  |
+| `getConversationState` | Get the current state of the conversation (status, assistantId, msg count) | `BIP.push(["getConversationState"])`                                         |
+| `help`                 | Get a list of available commands and their descriptions                    | `BIP.push(["help"])`                                                         |
 
-## 🎯 Integration Modes
+## 🛠️ Integration Modes
 
 ### Mode 1: Default Floating Button
 
