@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BIP Widget Demo - Push Pattern</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        background: white;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        color: #333;
+        margin-bottom: 20px;
+      }
+      .demo-section {
+        margin: 20px 0;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 5px;
+        border-left: 4px solid #007bff;
+      }
+      .demo-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin: 20px 0;
+      }
+      .demo-card {
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        border: 2px solid #e9ecef;
+        position: relative;
+      }
+      .demo-card.active {
+        border-color: #007bff;
+        background: #f8f9ff;
+      }
+      .demo-card h4 {
+        margin-top: 0;
+        color: #007bff;
+      }
+      button {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 5px;
+      }
+      button:hover {
+        background: #0056b3;
+      }
+      button.custom-trigger {
+        background: #28a745;
+      }
+      button.custom-trigger:hover {
+        background: #1e7e34;
+      }
+      button.switch-mode {
+        background: #ffc107;
+        color: #212529;
+      }
+      button.switch-mode:hover {
+        background: #e0a800;
+      }
+      .status {
+        padding: 10px;
+        border-radius: 5px;
+        margin: 10px 0;
+      }
+      .status.success {
+        background: #d4edda;
+        color: #155724;
+      }
+      .status.error {
+        background: #f8d7da;
+        color: #721c24;
+      }
+      .status.warning {
+        background: #fff3cd;
+        color: #856404;
+      }
+      .mode-indicator {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        padding: 5px 10px;
+        border-radius: 15px;
+        font-size: 12px;
+        font-weight: bold;
+      }
+      .mode-indicator.default {
+        background: #007bff;
+        color: white;
+      }
+      .mode-indicator.custom {
+        background: #28a745;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🤖 BIP Widget Demo - Push Pattern</h1>
+      <p>Open console to see commands being processed.</p>
+
+      <div class="demo-section">
+        <h3>Stav Widgetu</h3>
+        <div id="status" class="status warning">⏳ Načítám widget...</div>
+      </div>
+
+      <div class="demo-grid">
+        <!-- Default floating button mode -->
+        <div class="demo-card" id="defaultCard">
+          <div class="mode-indicator default">VÝCHOZÍ REŽIM</div>
+          <h4>🔵 Způsob 1: Výchozí plovoucí tlačítko</h4>
+          <p>
+            Widget zobrazuje svou vlastní modrou ikonku v pravém dolním rohu.
+          </p>
+          <button onclick="enableDefaultMode()" class="switch-mode">
+            🔄 Aktivovat tento režim
+          </button>
+          <br /><br />
+          <button onclick="openWidget()">🔓 Otevřít chat (API)</button>
+          <button onclick="closeWidget()">🔒 Zavřít chat (API)</button>
+        </div>
+
+        <!-- Custom trigger mode -->
+        <div class="demo-card" id="customCard">
+          <div class="mode-indicator custom">VLASTNÍ REŽIM</div>
+          <h4>🟢 Způsob 2: Vlastní trigger</h4>
+          <p>Widget skryje výchozí ikonku. Klient používá vlastní tlačítka.</p>
+          <button onclick="enableCustomMode()" class="switch-mode">
+            🔄 Aktivovat tento režim
+          </button>
+          <br /><br />
+          <button onclick="openWidget()" class="custom-trigger">
+            💬 Vlastní chat trigger
+          </button>
+          <button onclick="closeWidget()">🔒 Zavřít chat</button>
+        </div>
+      </div>
+
+      <div class="demo-section">
+        <h3>🧠 Context Examples & Manager</h3>
+        <button onclick="addUserContext()">👤 User context</button>
+        <button onclick="addPageContext()">📄 Page context</button>
+        <br /><br />
+        <button onclick="getAllContexts()">📋 Všetky kontexty</button>
+        <button onclick="searchContexts()">🔍 Vyhľadať kontexty</button>
+        <button onclick="clearAllContexts()">🗑️ Vymazať všetky</button>
+        <button onclick="showHelp()">📚 Zobraziť pomocník</button>
+      </div>
+    </div>
+
+    <!-- Initialize BIP queue early -->
+    <script>
+      window.BIP = window.BIP || [];
+      BIP.push(["init", { showDefaultTrigger: true }]);
+    </script>
+
+    <!-- Load widget script -->
+    <!-- <script src="./dist/widget.iife.js"></script> -->
+    <script src="https://chat-widget-test.hc1.blogic.ai/widget.iife.js"></script>
+
+    <script>
+      let currentMode = "default";
+
+      // Widget mode management
+      function enableDefaultMode() {
+        console.log("Switching to DEFAULT mode");
+        currentMode = "default";
+        updateModeIndicators();
+        BIP.push(["close"]);
+        setTimeout(() => BIP.push(["init", { showDefaultTrigger: true }]), 100);
+      }
+
+      function enableCustomMode() {
+        console.log("Switching to CUSTOM mode");
+        currentMode = "custom";
+        updateModeIndicators();
+        BIP.push(["close"]);
+        setTimeout(
+          () => BIP.push(["init", { showDefaultTrigger: false }]),
+          100
+        );
+      }
+
+      function updateModeIndicators() {
+        const defaultCard = document.getElementById("defaultCard");
+        const customCard = document.getElementById("customCard");
+        if (currentMode === "default") {
+          defaultCard.classList.add("active");
+          customCard.classList.remove("active");
+        } else {
+          defaultCard.classList.remove("active");
+          customCard.classList.add("active");
+        }
+      }
+
+      function openWidget() {
+        console.log("Opening widget");
+        BIP.push(["open"]);
+      }
+
+      function closeWidget() {
+        console.log("Closing widget");
+        BIP.push(["close"]);
+      }
+
+      // Context examples
+      function addUserContext() {
+        console.log("👤 Adding user context");
+        BIP.push([
+          "setContext",
+          "user_profile", // key first
+          {
+            userId: "user_123",
+            name: "Jan Novák",
+            email: "jan.novak@example.com",
+            role: "admin",
+          },
+        ]);
+      }
+
+      function addPageContext() {
+        console.log("📄 Adding page context");
+        BIP.push([
+          "setContext",
+          "current_page", // key first
+          {
+            url: window.location.href,
+            title: document.title,
+            timestamp: new Date().toISOString(),
+          },
+        ]);
+      }
+
+      // Context manager
+      function getAllContexts() {
+        console.log("📋 Getting all contexts");
+        BIP.push(["getContext"]);
+      }
+
+      function searchContexts() {
+        const query = prompt("Zadajte vyhľadávací výraz:", "user");
+        if (query) {
+          console.log(`🔍 Searching for: "${query}"`);
+          BIP.push(["searchContext", query]);
+        }
+      }
+
+      function clearAllContexts() {
+        if (confirm("Naozaj chcete vymazať všetky kontexty?")) {
+          console.log("🗑️ Clearing all contexts");
+          BIP.push(["clearContext"]);
+        }
+      }
+
+      function showHelp() {
+        console.log("📚 Showing help");
+        BIP.push(["help"]);
+      }
+
+      // Event listeners setup
+      function setupContextEventListeners() {
+        setTimeout(() => {
+          if (window.BIP && window.BIP._widget) {
+            const widget = window.BIP._widget;
+            console.log("✅ Context event listeners setup");
+
+            widget.addEventListener("contextResult", (event) => {
+              const { action, data, success, query } = event.detail;
+
+              switch (action) {
+                case "getAll":
+                  console.log("📋 Všetky kontexty:", data);
+                  data.forEach((item, index) => {
+                    console.log(
+                      `${index + 1}. ${item.id}: ${JSON.stringify(item.data)}`
+                    );
+                  });
+                  break;
+
+                case "search":
+                  console.log(
+                    `🔍 Nájdených ${data.length} kontextov pre "${query}"`
+                  );
+                  data.forEach((item, index) => {
+                    console.log(
+                      `${index + 1}. ${item.id}: ${JSON.stringify(item.data)}`
+                    );
+                  });
+                  break;
+
+                case "clearAll":
+                  console.log("🗑️ Všetky kontexty vymazané");
+                  break;
+
+                case "help":
+                  console.log(
+                    "📚 Dostupné príkazy:",
+                    data.map((cmd) => cmd.command).join(", ")
+                  );
+                  break;
+              }
+            });
+          }
+        }, 1000);
+      }
+
+      // Status check
+      function updateStatus() {
+        const statusElement = document.getElementById("status");
+        if (typeof window.BIP !== "undefined") {
+          statusElement.className = "status success";
+          statusElement.textContent = "✅ Widget načten a připraven";
+        } else {
+          statusElement.className = "status error";
+          statusElement.textContent = "❌ Widget se nepodařilo načíst";
+        }
+      }
+
+      // Initialize
+      updateModeIndicators();
+      setTimeout(updateStatus, 2000);
+      setupContextEventListeners();
+
+      console.log("Demo page loaded, BIP queue initialized");
+    </script>
+  </body>
+</html>
