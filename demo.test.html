@@ -185,6 +185,7 @@
           <button onclick="getConversationState()">
             📋 Get conversation state
           </button>
+          <button onclick="triggerCompletion()">🤖 Trigger Completion</button>
         </div>
       </div>
     </div>
@@ -340,6 +341,10 @@
       }
       function getConversationState() {
         processWidgetCommand("getConversationState");
+      }
+
+      function triggerCompletion() {
+        processWidgetCommand("triggerCompletion");
       }
 
       // --- Demo page UI update functions ---

@@ -63,6 +63,7 @@ BIP.push([
 | `addMessage`           | Add a message to the conversation history (e.g., prefill user input)       | `BIP.push(["addMessage", { role: "user", content: "Hello there!" }])`        |
 | `getMessages`          | Retrieve all messages in the current conversation                          | `BIP.push(["getMessages"])`                                                  |
 | `getConversationState` | Get the current state of the conversation (status, assistantId, msg count) | `BIP.push(["getConversationState"])`                                         |
+| `triggerCompletion`    | Triggers a response from the assistant                                     | `BIP.push(["triggerCompletion"])`                                            |
 | `help`                 | Get a list of available commands and their descriptions                    | `BIP.push(["help"])`                                                         |
 
 ## 🛠️ Integration Modes
