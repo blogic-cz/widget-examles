@@ -186,10 +186,6 @@
             📋 Get conversation state
           </button>
         </div>
-        <div class="button-group">
-          <h4>🛠️ Other</h4>
-          <button onclick="showHelp()">📚 Show help</button>
-        </div>
       </div>
     </div>
 
@@ -345,9 +341,6 @@
       function getConversationState() {
         processWidgetCommand("getConversationState");
       }
-      function showHelp() {
-        processWidgetCommand("help");
-      }
 
       // --- Demo page UI update functions ---
       function enableMode(isDefault) {
@@ -396,7 +389,6 @@
           "context",
           "contextResult",
           "conversationQueryResult",
-          "helpResult",
         ];
         eventTypes.forEach((type) => {
           widgetInstance.addEventListener(type, eventHandler);
