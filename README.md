@@ -2,6 +2,10 @@
 
 A collection of examples showing how to integrate the BIP chatbot widget into your website. The widget uses a simple **push pattern API** (similar to Google Analytics) that works reliably across different environments.
 
+**✨ LIVE DEMO AVAILABLE ✨**
+
+**View the working demo deployed on GitHub Pages: [https://blogic-cz.github.io/widget-examles/](https://blogic-cz.github.io/widget-examles/)**
+
 ## 🚀 Quick Start
 
 ### 1. Basic Integration
@@ -80,6 +84,8 @@ document.getElementById("my-chat-button").onclick = () => {
 
 **👉 See [demo.test.html](./demo.test.html) for a complete, working implementation** that includes:
 
+**🚀 You can also see this demo live at [https://blogic-cz.github.io/widget-examles/](https://blogic-cz.github.io/widget-examles/)**
+
 - ✅ Both integration modes (default button vs custom trigger)
 - ✅ Mode switching between different configurations
 - ✅ Context management examples (user data, page info)
@@ -111,7 +117,7 @@ The demo includes:
 
 ## 📞 Need Help?
 
-1. **Start with** [demo.test.html](./demo.test.html) - it's a complete working example
+1. **Start with** [demo.test.html](./demo.test.html) - it's a complete working example. **(Live version: [https://blogic-cz.github.io/widget-examles/](https://blogic-cz.github.io/widget-examles/))**
 2. **Copy the patterns** you see in the demo file
 3. **Modify** the configuration and context data for your use case
 
