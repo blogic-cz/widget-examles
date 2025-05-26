@@ -25,7 +25,7 @@ jobs:
         run: mkdir gh-pages-dist
 
       - name: Copy HTML file
-        run: cp widget-examles/demo.test.html gh-pages-dist/index.html
+        run: cp demo.test.html gh-pages-dist/index.html
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
