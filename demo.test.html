@@ -125,6 +125,34 @@
       <p>Open console to see commands being processed.</p>
 
       <div class="demo-section">
+        <h3>🔑 Authentication & Tenant</h3>
+        <div>
+          <label for="tokenInput">Token (JWT - required):</label>
+          <input
+            type="text"
+            id="tokenInput"
+            placeholder="Enter your token"
+            style="width: 70%; margin-bottom: 5px"
+          />
+          <button onclick="saveToken()" style="background-color: #17a2b8">
+            💾 Save Token
+          </button>
+        </div>
+        <div>
+          <label for="tenantCodeInput">Tenant Code (required):</label>
+          <input
+            type="text"
+            id="tenantCodeInput"
+            placeholder="Enter tenant code"
+            style="width: 70%; margin-bottom: 5px"
+          />
+          <button onclick="saveTenantCode()" style="background-color: #17a2b8">
+            💾 Save Tenant Code
+          </button>
+        </div>
+      </div>
+
+      <div class="demo-section">
         <h3>Widget Status</h3>
         <div id="status" class="status warning">⏳ Initializing widget...</div>
       </div>
@@ -197,7 +225,73 @@
       let bipWidgetInstance = null; // This will hold the widget instance
       let currentModeIsDefault = true; // For demo UI
 
+      // --- Token & Tenant Code Management ---
+      const TOKEN_STORAGE_KEY = "bip_widget_demo_token";
+      const TENANT_CODE_STORAGE_KEY = "bip_widget_demo_tenant_code";
+
+      function saveToken() {
+        const token = document.getElementById("tokenInput").value;
+        if (token) {
+          localStorage.setItem(TOKEN_STORAGE_KEY, token);
+          alert("Token saved to local storage!");
+        } else {
+          alert("Token field is empty.");
+        }
+      }
+
+      function loadToken() {
+        const savedToken = localStorage.getItem(TOKEN_STORAGE_KEY);
+        if (savedToken) {
+          document.getElementById("tokenInput").value = savedToken;
+        }
+      }
+
+      function saveTenantCode() {
+        const tenantCode = document.getElementById("tenantCodeInput").value;
+        if (tenantCode) {
+          localStorage.setItem(TENANT_CODE_STORAGE_KEY, tenantCode);
+          alert("Tenant Code saved to local storage!");
+        } else {
+          alert("Tenant Code field is empty.");
+        }
+      }
+
+      function loadTenantCode() {
+        const savedTenantCode = localStorage.getItem(TENANT_CODE_STORAGE_KEY);
+        if (savedTenantCode) {
+          document.getElementById("tenantCodeInput").value = savedTenantCode;
+        }
+      }
+      // --- End Token & Tenant Code Management ---
+
+      function getAppConfig() {
+        const token = document.getElementById("tokenInput").value;
+        const tenantCode = document.getElementById("tenantCodeInput").value;
+
+        if (!token || !tenantCode) {
+          alert(
+            "Token and Tenant Code are required for widget initialization!"
+          );
+          console.error(
+            "Token or Tenant Code is missing. Widget initialization aborted."
+          );
+          document.getElementById("status").textContent =
+            "❌ Error: Token and Tenant Code are required for widget initialization.";
+          document.getElementById("status").className = "status error";
+          return null; // Indicate failure
+        }
+
+        return {
+          token: token,
+          tenantCode: tenantCode,
+          showDefaultTrigger: currentModeIsDefault,
+          assistantId: "initial_assistant",
+        };
+      }
+
       function initializeApp() {
+        loadToken(); // Load token from local storage on init
+        loadTenantCode(); // Load tenant code from local storage on init
         const widgetFactory = window.BIPWidget; // As per vite.config.js name: 'BIPWidget'
 
         if (
@@ -206,13 +300,8 @@
         ) {
           bipWidgetInstance = widgetFactory.createBIPWidget();
 
-          // Initial configuration for the widget
-          const initialConfig = {
-            showDefaultTrigger: currentModeIsDefault,
-            assistantId: "initial_assistant",
-            // theme: 'light', // example
-            // position: 'bottom-right' // example
-          };
+          const initialConfig = getAppConfig();
+          if (!initialConfig) return; // Stop if token is missing
 
           bipWidgetInstance.init(initialConfig);
           console.log(
@@ -252,9 +341,38 @@
             "Widget instance not available to process command:",
             command
           );
-          alert("Widget is not initialized!");
+          alert(
+            "Widget is not initialized! Ensure token is provided and app initialized."
+          );
           return;
         }
+
+        // Special handling for init to always include token and tenantCode
+        if (command === "init") {
+          const baseConfig = args[0] || {};
+          const token = document.getElementById("tokenInput").value;
+          const tenantCode = document.getElementById("tenantCodeInput").value;
+
+          if (!token || !tenantCode) {
+            alert("Token and Tenant Code are required for re-initialization!");
+            console.error(
+              "Token or Tenant Code is missing. Widget re-init aborted."
+            );
+            return;
+          }
+          const fullConfig = { ...baseConfig, token, tenantCode };
+
+          console.log(
+            `🔵 Calling on instance: init with updated token/tenantCode`,
+            fullConfig
+          );
+          const statusDiv = document.getElementById("status");
+          statusDiv.textContent = `🚀 Calling: init`;
+          statusDiv.className = "status warning";
+          bipWidgetInstance.processCommand(["init", fullConfig]);
+          return; // Command processed
+        }
+
         console.log(
           `🔵 Calling on instance: ${command}`,
           args.length > 0 ? args : ""
@@ -293,7 +411,10 @@
         updateModeIndicators();
       }
       function reInitDarkTheme() {
-        processWidgetCommand("init", { theme: "dark" });
+        processWidgetCommand("init", {
+          theme: "dark",
+          // Token and tenantCode will be added by processWidgetCommand wrapper
+        });
       }
 
       // --- Context functions ---
@@ -359,6 +480,7 @@
         processWidgetCommand("init", {
           showDefaultTrigger: isDefault,
           assistantId: isDefault ? "default_id_reinit" : "custom_id_reinit",
+          // Token and tenantCode will be added by processWidgetCommand wrapper
         });
         updateModeIndicators();
       }
