@@ -222,7 +222,7 @@
     <script src="https://chat-widget-test.hc1.blogic.ai/widget.iife.js"></script>
 
     <script>
-      let bipWidgetInstance = null; // This will hold the widget instance
+      let chatWidgetInstance = null; // This will hold the widget instance
       let currentModeIsDefault = true; // For demo UI
 
       // --- Token & Tenant Code Management ---
@@ -296,27 +296,27 @@
 
         if (
           widgetFactory &&
-          typeof widgetFactory.createBIPWidget === "function"
+          typeof widgetFactory.createChatWidget === "function"
         ) {
-          bipWidgetInstance = widgetFactory.createBIPWidget();
+          chatWidgetInstance = widgetFactory.createChatWidget();
 
           const initialConfig = getAppConfig();
           if (!initialConfig) return; // Stop if token is missing
 
-          bipWidgetInstance.init(initialConfig);
+          chatWidgetInstance.init(initialConfig);
           console.log(
             "✅ BIP Widget instance created and initialized:",
-            bipWidgetInstance
+            chatWidgetInstance
           );
           document.getElementById("status").textContent =
             "✅ Widget ready (manual init)";
           document.getElementById("status").className = "status success";
 
-          setupEventListeners(bipWidgetInstance);
+          setupEventListeners(chatWidgetInstance);
           updateModeIndicators();
         } else {
           console.error(
-            "window.BIPWidget.createBIPWidget is not available. Widget script might have failed or not exported correctly."
+            "window.BIPWidget.createChatWidget is not available. Widget script might have failed or not exported correctly."
           );
           document.getElementById("status").textContent =
             "❌ Error: Widget failed to load.";
@@ -336,7 +336,7 @@
 
       // Helper to process commands if instance exists
       function processWidgetCommand(command, ...args) {
-        if (!bipWidgetInstance) {
+        if (!chatWidgetInstance) {
           console.error(
             "Widget instance not available to process command:",
             command
@@ -369,7 +369,7 @@
           const statusDiv = document.getElementById("status");
           statusDiv.textContent = `🚀 Calling: init`;
           statusDiv.className = "status warning";
-          bipWidgetInstance.processCommand(["init", fullConfig]);
+          chatWidgetInstance.processCommand(["init", fullConfig]);
           return; // Command processed
         }
 
@@ -380,7 +380,7 @@
         const statusDiv = document.getElementById("status");
         statusDiv.textContent = `🚀 Calling: ${command}`;
         statusDiv.className = "status warning";
-        bipWidgetInstance.processCommand([command, ...args]);
+        chatWidgetInstance.processCommand([command, ...args]);
       }
 
       // --- Widget control functions ---
@@ -520,7 +520,7 @@
         eventTypes.forEach((type) => {
           widgetInstance.addEventListener(type, eventHandler);
         });
-        console.log("✅ Widget event listeners setup on bipWidgetInstance");
+        console.log("✅ Widget event listeners setup on chatWidgetInstance");
       }
     </script>
   </body>
