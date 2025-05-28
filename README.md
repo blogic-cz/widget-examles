@@ -69,6 +69,7 @@ chatWidgetInstance.processCommand([
     name: "John Doe",
     role: "admin",
   },
+  "User profile",
 ]);
 ```
 
@@ -83,7 +84,7 @@ All commands are invoked using `chatWidgetInstance.processCommand([commandName, 
 | `init`                  | Initialize/Re-initialize widget (token and tenantCode are mandatory)       | `instance.processCommand(["init", { token: "jwt", tenantCode: "xyz", showDefaultTrigger: true }])`         |
 | `open`                  | Open the chat widget                                                       | `instance.processCommand(["open"])`                                                                        |
 | `close`                 | Close the chat widget                                                      | `instance.processCommand(["close"])`                                                                       |
-| `setContext`            | Add or update context data (ID, data object)                               | `instance.processCommand(["setContext", "user_profile", { name: "John" }])`                                |
+| `setContext`            | Add or update context data (ID, data object, description)                  | `instance.processCommand(["setContext", "user_profile", { name: "John" }, "User profile"])`                |
 | `getContext`            | Retrieve a specific context by ID, or all contexts if ID is omitted        | `instance.processCommand(["getContext", "user_profile"])` or `instance.processCommand(["getContext"])`     |
 | `clearContext`          | Clear a specific context by ID, or all contexts if ID is omitted           | `instance.processCommand(["clearContext", "user_profile"])` or `instance.processCommand(["clearContext"])` |
 | `searchContext`         | Search within stored contexts using a query string                         | `instance.processCommand(["searchContext", "find_this_text"])`                                             |
