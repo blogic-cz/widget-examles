@@ -195,7 +195,6 @@
           <h4>⚙️ Configuration (after initialization)</h4>
           <button onclick="reInitDefault()">🔄 Re-init (default)</button>
           <button onclick="reInitCustom()">🎨 Re-init (custom trigger)</button>
-          <button onclick="reInitDarkTheme()">🌙 Re-init (dark theme)</button>
         </div>
         <div class="button-group">
           <h4>🧠 Context</h4>
@@ -409,12 +408,6 @@
         });
         currentModeIsDefault = false;
         updateModeIndicators();
-      }
-      function reInitDarkTheme() {
-        processWidgetCommand("init", {
-          theme: "dark",
-          // Token and tenantCode will be added by processWidgetCommand wrapper
-        });
       }
 
       // --- Context functions ---
