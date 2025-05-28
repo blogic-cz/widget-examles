@@ -419,13 +419,18 @@
 
       // --- Context functions ---
       function addUserContext() {
-        processWidgetCommand("setContext", "user_profile", {
-          userId: "demoUserManual123",
-          name: "Maria Manual",
-          email: "maria.manual@example.com",
-          registeredAt: new Date().toISOString(),
-          permissions: ["read", "edit"],
-        });
+        processWidgetCommand(
+          "setContext",
+          "user_profile",
+          {
+            userId: "demoUserManual123",
+            name: "Maria Manual",
+            email: "maria.manual@example.com",
+            registeredAt: new Date().toISOString(),
+            permissions: ["read", "edit"],
+          },
+          "User profile"
+        );
       }
       function getAllContexts() {
         processWidgetCommand("getContext");
