@@ -117,6 +117,25 @@
         margin-bottom: 8px;
         color: #495057;
       }
+      /* Unified credentials UI styling */
+      .auth-form {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+      .auth-form .form-group {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+      .auth-form .form-group label {
+        margin-bottom: 5px;
+      }
+      .auth-form .form-group input {
+        padding: 5px;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+      }
     </style>
   </head>
   <body>
@@ -125,31 +144,32 @@
       <p>Open console to see commands being processed.</p>
 
       <div class="demo-section">
-        <h3>🔑 Authentication & Tenant</h3>
-        <div>
-          <label for="tokenInput">Token (JWT - required):</label>
-          <input
-            type="text"
-            id="tokenInput"
-            placeholder="Enter your token"
-            style="width: 70%; margin-bottom: 5px"
-          />
-          <button onclick="saveToken()" style="background-color: #17a2b8">
-            💾 Save Token
-          </button>
+        <h3>🔑 Credentials & Assistant ID</h3>
+        <div class="auth-form">
+          <div class="form-group">
+            <label for="tokenInput">Token (JWT):</label>
+            <input type="text" id="tokenInput" placeholder="Enter your token" />
+          </div>
+          <div class="form-group">
+            <label for="tenantCodeInput">Tenant Code:</label>
+            <input
+              type="text"
+              id="tenantCodeInput"
+              placeholder="Enter tenant code"
+            />
+          </div>
+          <div class="form-group">
+            <label for="assistantIdInput">Assistant ID:</label>
+            <input
+              type="text"
+              id="assistantIdInput"
+              placeholder="Enter assistant ID"
+            />
+          </div>
         </div>
-        <div>
-          <label for="tenantCodeInput">Tenant Code (required):</label>
-          <input
-            type="text"
-            id="tenantCodeInput"
-            placeholder="Enter tenant code"
-            style="width: 70%; margin-bottom: 5px"
-          />
-          <button onclick="saveTenantCode()" style="background-color: #17a2b8">
-            💾 Save Tenant Code
-          </button>
-        </div>
+        <button onclick="saveAndInit()" style="background-color: #17a2b8">
+          💾 Save & Initialize Widget
+        </button>
       </div>
 
       <div class="demo-section">
@@ -199,6 +219,7 @@
         <div class="button-group">
           <h4>🧠 Context</h4>
           <button onclick="addUserContext()">👤 User context</button>
+          <button onclick="addContractContext()">📄 Contract context</button>
           <button onclick="getAllContexts()">📋 All contexts</button>
           <button onclick="searchContexts()">🔍 Search contexts</button>
           <button onclick="clearAllContexts()">🗑️ Clear all</button>
@@ -219,7 +240,6 @@
 
     <!-- Load widget script FIRST -->
     <script src="https://chat-widget-test.hc1.blogic.ai/widget.iife.js"></script>
-
     <script>
       let chatWidgetInstance = null; // This will hold the widget instance
       let currentModeIsDefault = true; // For demo UI
@@ -227,6 +247,7 @@
       // --- Token & Tenant Code Management ---
       const TOKEN_STORAGE_KEY = "bip_widget_demo_token";
       const TENANT_CODE_STORAGE_KEY = "bip_widget_demo_tenant_code";
+      const ASSISTANT_ID_STORAGE_KEY = "bip_widget_demo_assistant_id";
 
       function saveToken() {
         const token = document.getElementById("tokenInput").value;
@@ -261,21 +282,39 @@
           document.getElementById("tenantCodeInput").value = savedTenantCode;
         }
       }
+
+      function saveAssistantId() {
+        const assistantId = document.getElementById("assistantIdInput").value;
+        if (assistantId) {
+          localStorage.setItem(ASSISTANT_ID_STORAGE_KEY, assistantId);
+          alert("Assistant ID saved to local storage!");
+        } else {
+          alert("Assistant ID field is empty.");
+        }
+      }
+
+      function loadAssistantId() {
+        const savedAssistantId = localStorage.getItem(ASSISTANT_ID_STORAGE_KEY);
+        if (savedAssistantId) {
+          document.getElementById("assistantIdInput").value = savedAssistantId;
+        }
+      }
       // --- End Token & Tenant Code Management ---
 
       function getAppConfig() {
         const token = document.getElementById("tokenInput").value;
         const tenantCode = document.getElementById("tenantCodeInput").value;
+        const assistantId = document.getElementById("assistantIdInput").value;
 
-        if (!token || !tenantCode) {
+        if (!token || !tenantCode || !assistantId) {
           alert(
-            "Token and Tenant Code are required for widget initialization!"
+            "Token, Tenant Code, and Assistant ID are required for widget initialization!"
           );
           console.error(
-            "Token or Tenant Code is missing. Widget initialization aborted."
+            "Token, Tenant Code, or Assistant ID is missing. Widget initialization aborted."
           );
           document.getElementById("status").textContent =
-            "❌ Error: Token and Tenant Code are required for widget initialization.";
+            "❌ Error: Token, Tenant Code, and Assistant ID are required for widget initialization.";
           document.getElementById("status").className = "status error";
           return null; // Indicate failure
         }
@@ -284,13 +323,14 @@
           token: token,
           tenantCode: tenantCode,
           showDefaultTrigger: currentModeIsDefault,
-          assistantId: "initial_assistant",
+          assistantId: assistantId,
         };
       }
 
       function initializeApp() {
         loadToken(); // Load token from local storage on init
         loadTenantCode(); // Load tenant code from local storage on init
+        loadAssistantId(); // Load assistant ID from local storage on init
         const widgetFactory = window.BIPWidget; // As per vite.config.js name: 'BIPWidget'
 
         if (
@@ -300,6 +340,7 @@
           chatWidgetInstance = widgetFactory.createChatWidget();
 
           const initialConfig = getAppConfig();
+          console.log("initialConfig", initialConfig);
           if (!initialConfig) return; // Stop if token is missing
 
           chatWidgetInstance.init(initialConfig);
@@ -313,6 +354,7 @@
 
           setupEventListeners(chatWidgetInstance);
           updateModeIndicators();
+          openWidget();
         } else {
           console.error(
             "window.BIPWidget.createChatWidget is not available. Widget script might have failed or not exported correctly."
@@ -345,7 +387,6 @@
           );
           return;
         }
-
         // Special handling for init to always include token and tenantCode
         if (command === "init") {
           const baseConfig = args[0] || {};
@@ -425,8 +466,28 @@
           "User profile"
         );
       }
+      function addContractContext() {
+        processWidgetCommand(
+          "setContext",
+          "Životní pojištění Allianz #1234567890",
+          {
+            contractId: "1234567890",
+            contractNumber: "1234567890",
+            type: "Životní pojištění",
+            provider: "Allianz",
+            expirationDate: new Date(
+              new Date().setDate(new Date().getDate() - 1)
+            ).toISOString(),
+            isExpired: true,
+            isActive: false,
+            note: "Pan Franta Vomáčka si přeje po expiraci pojištění změnit pojištění na životní pojištění s větším pojistným plněním.",
+          },
+          "Contract of user Franta Vomáčka"
+        );
+      }
       function getAllContexts() {
         processWidgetCommand("getContext");
+        z;
       }
       function searchContexts() {
         const query = prompt("Enter search term for context:", "Maria");
@@ -519,6 +580,26 @@
           widgetInstance.addEventListener(type, eventHandler);
         });
         console.log("✅ Widget event listeners setup on chatWidgetInstance");
+      }
+
+      // Save all credentials and reinitialize widget
+      function saveAndInit() {
+        const token = document.getElementById("tokenInput").value;
+        const tenantCode = document.getElementById("tenantCodeInput").value;
+        const assistantId = document.getElementById("assistantIdInput").value;
+        localStorage.setItem(TOKEN_STORAGE_KEY, token);
+        localStorage.setItem(TENANT_CODE_STORAGE_KEY, tenantCode);
+        localStorage.setItem(ASSISTANT_ID_STORAGE_KEY, assistantId);
+        alert("Configuration saved. Refresh page to initialize widget...");
+        loadToken();
+        loadTenantCode();
+        loadAssistantId();
+        if (chatWidgetInstance) {
+          processWidgetCommand("init", {
+            showDefaultTrigger: currentModeIsDefault,
+            assistantId: assistantId,
+          });
+        }
       }
     </script>
   </body>
