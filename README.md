@@ -97,6 +97,60 @@ All commands are invoked using `chatWidgetInstance.processCommand([commandName, 
 | `triggerCompletion`     | Triggers a response from the assistant                                     | `instance.processCommand(["triggerCompletion"])`                                                           |
 | `help`                  | (If implemented) Get a list of available commands                          | `instance.processCommand(["help"])`                                                                        |
 
+## 🔔 Event Listening
+
+The widget fires events that you can listen to for real-time updates:
+
+```javascript
+// Listen for conversation updates (new messages, content streaming)
+chatWidgetInstance.addEventListener("conversationUpdate", (event) => {
+  const { action, data, messageId, content, type } = event.detail;
+
+  switch (action) {
+    case "addMessage":
+      console.log(`New ${type} message added:`, data);
+      break;
+    case "appendContent":
+      console.log(`Content appended to ${type} message:`, messageId, content);
+      break;
+    case "streamStart":
+      console.log(`${type} response streaming started for message:`, messageId);
+      break;
+    case "streamEnd":
+      console.log(
+        `${type} response streaming finished for message:`,
+        messageId
+      );
+      break;
+  }
+});
+
+// Listen for widget open/close events
+chatWidgetInstance.addEventListener("open", (event) => {
+  console.log("Widget opened:", event.detail.isOpen);
+});
+
+chatWidgetInstance.addEventListener("close", (event) => {
+  console.log("Widget closed:", event.detail.isOpen);
+});
+
+// Listen for context updates
+chatWidgetInstance.addEventListener("contextUpdate", (event) => {
+  console.log("Contexts updated:", event.detail.contexts);
+});
+```
+
+### Available Events
+
+| Event Name                | Description                                              | Event Detail Structure                                                                                                                              |
+| ------------------------- | -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `conversationUpdate`      | Fired when messages are added or content is streamed     | `{ action: "addMessage" \| "appendContent" \| "streamStart" \| "streamEnd", type: "user" \| "assistant" \| "system", data?, messageId?, content? }` |
+| `open`                    | Fired when the widget is opened                          | `{ isOpen: true }`                                                                                                                                  |
+| `close`                   | Fired when the widget is closed                          | `{ isOpen: false }`                                                                                                                                 |
+| `contextUpdate`           | Fired when context data is updated                       | `{ contexts: Record<string, ContextData> }`                                                                                                         |
+| `contextResult`           | Fired in response to context-related commands            | Various structures depending on the context action                                                                                                  |
+| `conversationQueryResult` | Fired in response to conversation-related query commands | Various structures depending on the query action                                                                                                    |
+
 ## 🛠️ Integration Modes
 
 ### Mode 1: Default Floating Button
@@ -144,8 +198,9 @@ document.getElementById("my-chat-button").onclick = () => {
 - ✅ Mode switching between different configurations using `chatWidgetInstance.init()`
 - ✅ Context management examples
 - ✅ All available API commands with visual feedback using `chatWidgetInstance.processCommand()`
-- ✅ Event listeners (e.g., `chatWidgetInstance.addEventListener(...)`)
-- ✅ Real-time status monitoring
+- ✅ Event listeners for all events including `conversationUpdate` (e.g., `chatWidgetInstance.addEventListener(...)`)
+- ✅ Real-time status monitoring with visual feedback for message streaming
+- ✅ Demonstration of conversation event handling patterns
 
 **Just open `demo.test.html` in your browser** - it connects to the live widget and demonstrates all features based on the manual instantiation pattern.
 
