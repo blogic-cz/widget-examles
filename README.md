@@ -2,7 +2,7 @@
 
 A collection of examples showing how to integrate the BIP chatbot widget into your website. The widget uses a direct instance API after creation.
 
-**✨ LIVE DEMO AVAILABLE ✨**
+## ✨ LIVE DEMO AVAILABLE ✨
 
 **View the working demo deployed on GitHub Pages: [https://blogic-cz.github.io/widget-examles/](https://blogic-cz.github.io/widget-examles/)**
 
