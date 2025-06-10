@@ -31,7 +31,7 @@ Then, in a subsequent `<script>` tag, create and initialize the widget:
       const initialConfig = {
         token: "YOUR_JWT_TOKEN_HERE", // Mandatory: Replace with a valid token
         tenantCode: "YOUR_TENANT_CODE_HERE", // Mandatory: Replace with your tenant code
-        assistantId: "YOUR_ASSISTANT_ID_HERE", // Optional: Specify your assistant
+        assistantId: "YOUR_ASSISTANT_ID_HERE", // Mandatory: Specify your assistant
         showDefaultTrigger: true, // Optional: Show the default button
       };
       chatWidgetInstance.init(initialConfig);
