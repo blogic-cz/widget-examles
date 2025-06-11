@@ -34,7 +34,11 @@ Then, in a subsequent `<script>` tag, create and initialize the widget:
         assistantId: "YOUR_ASSISTANT_ID_HERE", // Mandatory: Specify your assistant
         showDefaultTrigger: true, // Optional: Show the default button
       };
-      chatWidgetInstance.init(initialConfig);
+      // Initialize using the command pattern (recommended)
+      chatWidgetInstance.processCommand(["init", initialConfig]);
+
+      // Alternative: Direct init method (deprecated but still supported)
+      // chatWidgetInstance.init(initialConfig);
 
       // Example: Open the widget after initialization
       // chatWidgetInstance.processCommand(["open"]);
@@ -95,6 +99,7 @@ All commands are invoked using `chatWidgetInstance.processCommand([commandName, 
 | `getMessages`           | Retrieve all messages in the current conversation                          | `instance.processCommand(["getMessages"])`                                                                 |
 | `getConversationState`  | Get the current state of the conversation (status, assistantId, msg count) | `instance.processCommand(["getConversationState"])`                                                        |
 | `triggerCompletion`     | Triggers a response from the assistant                                     | `instance.processCommand(["triggerCompletion"])`                                                           |
+| `destroy`               | Destroy the widget and clean up all resources                              | `instance.processCommand(["destroy"])`                                                                     |
 | `help`                  | (If implemented) Get a list of available commands                          | `instance.processCommand(["help"])`                                                                        |
 
 ## 🔔 Event Listening
@@ -165,7 +170,11 @@ const config = {
   showDefaultTrigger: true,
   assistantId: "YOUR_ASSISTANT_ID_HERE",
 };
-chatWidgetInstance.init(config);
+// Use command pattern (recommended)
+chatWidgetInstance.processCommand(["init", config]);
+
+// Or use direct method (deprecated)
+// chatWidgetInstance.init(config);
 ```
 
 ### Mode 2: Custom Trigger
@@ -180,7 +189,11 @@ const config = {
   showDefaultTrigger: false,
   assistantId: "YOUR_ASSISTANT_ID_HERE",
 };
-chatWidgetInstance.init(config);
+// Use command pattern (recommended)
+chatWidgetInstance.processCommand(["init", config]);
+
+// Or use direct method (deprecated)
+// chatWidgetInstance.init(config);
 
 // Then use your own buttons to control the widget via the instance
 document.getElementById("my-chat-button").onclick = () => {
@@ -195,7 +208,7 @@ document.getElementById("my-chat-button").onclick = () => {
 **🚀 You can also see this demo live at [https://blogic-cz.github.io/widget-examles/](https://blogic-cz.github.io/widget-examles/)**
 
 - ✅ Both integration modes (default button vs custom trigger)
-- ✅ Mode switching between different configurations using `chatWidgetInstance.init()`
+- ✅ Mode switching between different configurations using `chatWidgetInstance.processCommand(["init", config])`
 - ✅ Context management examples
 - ✅ All available API commands with visual feedback using `chatWidgetInstance.processCommand()`
 - ✅ Event listeners for all events including `conversationUpdate` (e.g., `chatWidgetInstance.addEventListener(...)`)

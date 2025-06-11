@@ -343,7 +343,8 @@
           console.log("initialConfig", initialConfig);
           if (!initialConfig) return; // Stop if token is missing
 
-          chatWidgetInstance.init(initialConfig);
+          // Use processCommand pattern for consistent initialization
+          chatWidgetInstance.processCommand(["init", initialConfig]);
           console.log(
             "✅ BIP Widget instance created and initialized:",
             chatWidgetInstance
