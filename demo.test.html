@@ -235,6 +235,13 @@
           </button>
           <button onclick="triggerCompletion()">🤖 Trigger Completion</button>
         </div>
+        <div class="button-group">
+          <h4>🧹 Conversation Management</h4>
+          <button onclick="deleteLastMessage()">🗑️ Delete Last Message</button>
+          <button onclick="replaceConversationHistory()">
+            🔄 Replace Conversation History
+          </button>
+        </div>
       </div>
     </div>
 
@@ -602,6 +609,37 @@
             assistantId: assistantId,
           });
         }
+      }
+
+      // --- Conversation management demo functions ---
+      function deleteLastMessage() {
+        if (!chatWidgetInstance) return;
+        // For demo: get last message from store if available
+        const store = chatWidgetInstance._store || chatWidgetInstance.store;
+        if (!store || !store.getState) {
+          alert("Widget store not available.");
+          return;
+        }
+        const messages = store.getState().messages;
+        if (!messages || messages.length === 0) {
+          alert("No messages to delete.");
+          return;
+        }
+        const lastMessageId = messages[messages.length - 1].id;
+        processWidgetCommand("deleteMessage", lastMessageId);
+      }
+      function replaceConversationHistory() {
+        if (!chatWidgetInstance) return;
+        // For demo: replace with a single sample message
+        const newMessages = [
+          {
+            id: "demo-replaced-" + Date.now(),
+            type: "user",
+            text: "This is a replaced conversation history message.",
+            createdAt: new Date().toISOString(),
+          },
+        ];
+        processWidgetCommand("updateConversationHistory", newMessages);
       }
     </script>
   </body>
