@@ -84,25 +84,27 @@ chatWidgetInstance.processCommand([
 
 All commands are invoked using `chatWidgetInstance.processCommand([commandName, ...args])`.
 
-| Command (`commandName`) | Description                                                                | Example Call with `processCommand`                                                                         |
-| ----------------------- | -------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| `init`                  | Initialize/Re-initialize widget (token and tenantCode are mandatory)       | `instance.processCommand(["init", { token: "jwt", tenantCode: "xyz", showDefaultTrigger: true }])`         |
-| `open`                  | Open the chat widget                                                       | `instance.processCommand(["open"])`                                                                        |
-| `close`                 | Close the chat widget                                                      | `instance.processCommand(["close"])`                                                                       |
-| `setPosition`           | Change widget position dynamically without re-initialization               | `instance.processCommand(["setPosition", "bottom-left"])`                                                  |
-| `setContext`            | Add or update context data (ID, data object, description)                  | `instance.processCommand(["setContext", "user_profile", { name: "John" }, "User profile"])`                |
-| `getContext`            | Retrieve a specific context by ID, or all contexts if ID is omitted        | `instance.processCommand(["getContext", "user_profile"])` or `instance.processCommand(["getContext"])`     |
-| `clearContext`          | Clear a specific context by ID, or all contexts if ID is omitted           | `instance.processCommand(["clearContext", "user_profile"])` or `instance.processCommand(["clearContext"])` |
-| `searchContext`         | Search within stored contexts using a query string                         | `instance.processCommand(["searchContext", "find_this_text"])`                                             |
-| `removeContext`         | Remove a specific context by its ID                                        | `instance.processCommand(["removeContext", "context_id_to_delete"])`                                       |
-| `setAssistantId`        | Set the Assistant ID for the conversation                                  | `instance.processCommand(["setAssistantId", "your_assistant_id"])`                                         |
-| `getAssistantId`        | Get the current Assistant ID                                               | `instance.processCommand(["getAssistantId"])`                                                              |
-| `addMessage`            | Add a message to the conversation history (e.g., prefill user input)       | `instance.processCommand(["addMessage", { type: "user", text: "Hello!" }])`                                |
-| `getMessages`           | Retrieve all messages in the current conversation                          | `instance.processCommand(["getMessages"])`                                                                 |
-| `getConversationState`  | Get the current state of the conversation (status, assistantId, msg count) | `instance.processCommand(["getConversationState"])`                                                        |
-| `triggerCompletion`     | Triggers a response from the assistant                                     | `instance.processCommand(["triggerCompletion"])`                                                           |
-| `destroy`               | Destroy the widget and clean up all resources                              | `instance.processCommand(["destroy"])`                                                                     |
-| `help`                  | (If implemented) Get a list of available commands                          | `instance.processCommand(["help"])`                                                                        |
+| Command (`commandName`)     | Description                                                                | Example Call with `processCommand`                                                                         |
+| --------------------------- | -------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `init`                      | Initialize/Re-initialize widget (token and tenantCode are mandatory)       | `instance.processCommand(["init", { token: "jwt", tenantCode: "xyz", showDefaultTrigger: true }])`         |
+| `open`                      | Open the chat widget                                                       | `instance.processCommand(["open"])`                                                                        |
+| `close`                     | Close the chat widget                                                      | `instance.processCommand(["close"])`                                                                       |
+| `setPosition`               | Change widget position dynamically without re-initialization               | `instance.processCommand(["setPosition", "bottom-left"])`                                                  |
+| `setContext`                | Add or update context data (ID, data object, description)                  | `instance.processCommand(["setContext", "user_profile", { name: "John" }, "User profile"])`                |
+| `getContext`                | Retrieve a specific context by ID, or all contexts if ID is omitted        | `instance.processCommand(["getContext", "user_profile"])` or `instance.processCommand(["getContext"])`     |
+| `clearContext`              | Clear a specific context by ID, or all contexts if ID is omitted           | `instance.processCommand(["clearContext", "user_profile"])` or `instance.processCommand(["clearContext"])` |
+| `searchContext`             | Search within stored contexts using a query string                         | `instance.processCommand(["searchContext", "find_this_text"])`                                             |
+| `removeContext`             | Remove a specific context by its ID                                        | `instance.processCommand(["removeContext", "context_id_to_delete"])`                                       |
+| `setAssistantId`            | Set the Assistant ID for the conversation                                  | `instance.processCommand(["setAssistantId", "your_assistant_id"])`                                         |
+| `getAssistantId`            | Get the current Assistant ID                                               | `instance.processCommand(["getAssistantId"])`                                                              |
+| `addMessage`                | Add a message to the conversation history (e.g., prefill user input)       | `instance.processCommand(["addMessage", { type: "user", text: "Hello!" }])`                                |
+| `getMessages`               | Retrieve all messages in the current conversation                          | `instance.processCommand(["getMessages"])`                                                                 |
+| `getConversationState`      | Get the current state of the conversation (status, assistantId, msg count) | `instance.processCommand(["getConversationState"])`                                                        |
+| `triggerCompletion`         | Triggers a response from the assistant                                     | `instance.processCommand(["triggerCompletion"])`                                                           |
+| `deleteMessage`             | Delete a specific message from the conversation by its ID                  | `instance.processCommand(["deleteMessage", "message_id_to_delete"])`                                       |
+| `updateConversationHistory` | Update the entire conversation history with new message array              | `instance.processCommand(["updateConversationHistory", messageArray])`                                     |
+| `destroy`                   | Destroy the widget and clean up all resources                              | `instance.processCommand(["destroy"])`                                                                     |
+| `help`                      | (If implemented) Get a list of available commands                          | `instance.processCommand(["help"])`                                                                        |
 
 ## 🔔 Event Listening
 
