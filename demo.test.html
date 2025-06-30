@@ -215,6 +215,26 @@
           <h4>⚙️ Configuration (after initialization)</h4>
           <button onclick="reInitDefault()">🔄 Re-init (default)</button>
           <button onclick="reInitCustom()">🎨 Re-init (custom trigger)</button>
+          <div style="margin-top: 10px">
+            <label>Widget Position:</label>
+            <div style="display: flex; gap: 8px; margin-bottom: 8px">
+              <button type="button" onclick="setWidgetPosition('bottom-right')">
+                Bottom Right
+              </button>
+              <button
+                type="button"
+                onclick="setWidgetPosition('bottom-center')"
+              >
+                Bottom Center
+              </button>
+              <button type="button" onclick="setWidgetPosition('bottom-left')">
+                Bottom Left
+              </button>
+            </div>
+            <small
+              >This change works without re-initialization of the widget.</small
+            >
+          </div>
         </div>
         <div class="button-group">
           <h4>🧠 Context</h4>
@@ -247,6 +267,7 @@
 
     <!-- Load widget script FIRST -->
     <script src="https://chat-widget-test.hc1.blogic.ai/widget.iife.js"></script>
+    <script src="./dist/widget.iife.js"></script>
     <script>
       let chatWidgetInstance = null; // This will hold the widget instance
       let currentModeIsDefault = true; // For demo UI
@@ -306,12 +327,14 @@
           document.getElementById("assistantIdInput").value = savedAssistantId;
         }
       }
+
       // --- End Token & Tenant Code Management ---
 
       function getAppConfig() {
         const token = document.getElementById("tokenInput").value;
         const tenantCode = document.getElementById("tenantCodeInput").value;
         const assistantId = document.getElementById("assistantIdInput").value;
+        const position = "bottom-right";
 
         if (!token || !tenantCode || !assistantId) {
           alert(
@@ -331,6 +354,7 @@
           tenantCode: tenantCode,
           showDefaultTrigger: currentModeIsDefault,
           assistantId: assistantId,
+          position: position,
         };
       }
 
@@ -400,6 +424,7 @@
           const baseConfig = args[0] || {};
           const token = document.getElementById("tokenInput").value;
           const tenantCode = document.getElementById("tenantCodeInput").value;
+          const position = "bottom-right";
 
           if (!token || !tenantCode) {
             alert("Token and Tenant Code are required for re-initialization!");
@@ -408,7 +433,7 @@
             );
             return;
           }
-          const fullConfig = { ...baseConfig, token, tenantCode };
+          const fullConfig = { ...baseConfig, token, tenantCode, position };
 
           console.log(
             `🔵 Calling on instance: init with updated token/tenantCode`,
@@ -596,9 +621,11 @@
         const token = document.getElementById("tokenInput").value;
         const tenantCode = document.getElementById("tenantCodeInput").value;
         const assistantId = document.getElementById("assistantIdInput").value;
+        const position = "bottom-right";
         localStorage.setItem(TOKEN_STORAGE_KEY, token);
         localStorage.setItem(TENANT_CODE_STORAGE_KEY, tenantCode);
         localStorage.setItem(ASSISTANT_ID_STORAGE_KEY, assistantId);
+        localStorage.setItem("bip_widget_demo_position", position);
         alert("Configuration saved. Refresh page to initialize widget...");
         loadToken();
         loadTenantCode();
@@ -607,6 +634,7 @@
           processWidgetCommand("init", {
             showDefaultTrigger: currentModeIsDefault,
             assistantId: assistantId,
+            position: position,
           });
         }
       }
@@ -640,6 +668,11 @@
           },
         ];
         processWidgetCommand("updateConversationHistory", newMessages);
+      }
+
+      // --- Widget position button handler ---
+      function setWidgetPosition(pos) {
+        processWidgetCommand("setPosition", pos);
       }
     </script>
   </body>

@@ -33,6 +33,7 @@ Then, in a subsequent `<script>` tag, create and initialize the widget:
         tenantCode: "YOUR_TENANT_CODE_HERE", // Mandatory: Replace with your tenant code
         assistantId: "YOUR_ASSISTANT_ID_HERE", // Mandatory: Specify your assistant
         showDefaultTrigger: true, // Optional: Show the default button
+        position: "bottom-right", // Optional: "bottom-right" (default), "bottom-center", "bottom-left"
       };
       // Initialize using the command pattern (recommended)
       chatWidgetInstance.processCommand(["init", initialConfig]);
@@ -88,6 +89,7 @@ All commands are invoked using `chatWidgetInstance.processCommand([commandName, 
 | `init`                  | Initialize/Re-initialize widget (token and tenantCode are mandatory)       | `instance.processCommand(["init", { token: "jwt", tenantCode: "xyz", showDefaultTrigger: true }])`         |
 | `open`                  | Open the chat widget                                                       | `instance.processCommand(["open"])`                                                                        |
 | `close`                 | Close the chat widget                                                      | `instance.processCommand(["close"])`                                                                       |
+| `setPosition`           | Change widget position dynamically without re-initialization               | `instance.processCommand(["setPosition", "bottom-left"])`                                                  |
 | `setContext`            | Add or update context data (ID, data object, description)                  | `instance.processCommand(["setContext", "user_profile", { name: "John" }, "User profile"])`                |
 | `getContext`            | Retrieve a specific context by ID, or all contexts if ID is omitted        | `instance.processCommand(["getContext", "user_profile"])` or `instance.processCommand(["getContext"])`     |
 | `clearContext`          | Clear a specific context by ID, or all contexts if ID is omitted           | `instance.processCommand(["clearContext", "user_profile"])` or `instance.processCommand(["clearContext"])` |
