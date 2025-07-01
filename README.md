@@ -1,14 +1,17 @@
 # BIP Widget Integration Examples
 
-A collection of examples showing how to integrate the BIP chatbot widget into your website. The widget uses a direct instance API after creation.
+A collection of examples showing how to integrate the BIP chatbot widget into your website. The widget uses a direct instance API after creation and supports **multiple independent instances** on the same page.
 
-## ✨ LIVE DEMO AVAILABLE ✨
+## ✨ LIVE DEMOS AVAILABLE ✨
 
-**View the working demo deployed on GitHub Pages: [https://blogic-cz.github.io/widget-examles/](https://blogic-cz.github.io/widget-examles/)**
+**View the working demos deployed on GitHub Pages:**
+
+- **Single Widget Demo:** [https://blogic-cz.github.io/widget-examles/](https://blogic-cz.github.io/widget-examles/)
+- **Multi-Widget Demo:** [https://blogic-cz.github.io/widget-examles/demo.multividget.html](https://blogic-cz.github.io/widget-examles/demo.multividget.html)
 
 ## 🚀 Quick Start
 
-### 1. Basic Integration
+### 1. Basic Integration (Single Widget)
 
 First, include the widget script in your HTML (usually before the closing `</body>` tag):
 
@@ -27,6 +30,9 @@ Then, in a subsequent `<script>` tag, create and initialize the widget:
       typeof window.BIPWidget.createChatWidget === "function"
     ) {
       const chatWidgetInstance = window.BIPWidget.createChatWidget();
+
+      // The widget automatically gets a unique instanceId
+      console.log("Widget instance ID:", chatWidgetInstance.instanceId);
 
       const initialConfig = {
         token: "YOUR_JWT_TOKEN_HERE", // Mandatory: Replace with a valid token
@@ -52,9 +58,98 @@ Then, in a subsequent `<script>` tag, create and initialize the widget:
 </script>
 ```
 
-That's it! If `showDefaultTrigger` is `true` (the default), the widget will appear.
+### 2. Multi-Instance Integration (New!)
 
-### 2. Control the Widget
+You can now create **multiple independent widget instances** on the same page without conflicts:
+
+```html
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    if (
+      window.BIPWidget &&
+      typeof window.BIPWidget.createChatWidget === "function"
+    ) {
+      // Create multiple independent instances - IDs are automatically generated
+      const chatWidgetInstance1 = window.BIPWidget.createChatWidget();
+      const chatWidgetInstance2 = window.BIPWidget.createChatWidget();
+      const chatWidgetInstance3 = window.BIPWidget.createChatWidget();
+
+      // Each widget has a unique instanceId that you can access if needed
+      console.log("Widget 1 ID:", chatWidgetInstance1.instanceId);
+      console.log("Widget 2 ID:", chatWidgetInstance2.instanceId);
+      console.log("Widget 3 ID:", chatWidgetInstance3.instanceId);
+
+      // Configure each widget independently
+      const config1 = {
+        token: "YOUR_JWT_TOKEN_HERE",
+        tenantCode: "YOUR_TENANT_CODE_HERE",
+        assistantId: "YOUR_ASSISTANT_ID_HERE",
+        showDefaultTrigger: true,
+        position: "bottom-right",
+      };
+
+      const config2 = {
+        token: "YOUR_JWT_TOKEN_HERE",
+        tenantCode: "YOUR_TENANT_CODE_HERE",
+        assistantId: "YOUR_ASSISTANT_ID_HERE",
+        showDefaultTrigger: false, // Custom trigger only
+        position: "bottom-left",
+      };
+
+      const config3 = {
+        token: "YOUR_JWT_TOKEN_HERE",
+        tenantCode: "YOUR_TENANT_CODE_HERE",
+        assistantId: "YOUR_ASSISTANT_ID_HERE",
+        showDefaultTrigger: true,
+        position: "bottom-center",
+      };
+
+      // Initialize all widgets
+      chatWidgetInstance1.processCommand(["init", config1]);
+      chatWidgetInstance2.processCommand(["init", config2]);
+      chatWidgetInstance3.processCommand(["init", config3]);
+
+      // Control each widget independently
+      document.getElementById("open-widget-1").onclick = () => {
+        chatWidgetInstance1.processCommand(["open"]);
+      };
+
+      document.getElementById("open-widget-2").onclick = () => {
+        chatWidgetInstance2.processCommand(["open"]);
+      };
+    }
+  });
+</script>
+```
+
+**Key Benefits of Multi-Instance Support:**
+
+- ✅ **Independent State**: Each widget has its own conversation history, context, and settings
+- ✅ **Isolated DOM**: No ID conflicts or CSS interference between instances
+- ✅ **Separate Event Systems**: Events from one widget don't affect others
+- ✅ **Different Positions**: Each widget can be positioned independently
+- ✅ **Mixed Configurations**: Some can have default triggers, others custom triggers only
+- ✅ **Automatic ID Management**: Unique IDs are automatically generated and accessible via `.instanceId`
+
+**Instance ID Access:**
+
+```javascript
+// Create widgets - IDs are automatically generated
+const supportWidget = window.BIPWidget.createChatWidget();
+const salesWidget = window.BIPWidget.createChatWidget();
+
+// Access the auto-generated IDs if needed for logging, analytics, etc.
+console.log("Support widget ID:", supportWidget.instanceId);
+console.log("Sales widget ID:", salesWidget.instanceId);
+
+// Use widgets normally - no need to manage IDs manually
+supportWidget.processCommand(["init", supportConfig]);
+salesWidget.processCommand(["init", salesConfig]);
+```
+
+That's it! If `showDefaultTrigger` is `true` (the default), each widget will appear with its own floating button.
+
+### 3. Control the Widget
 
 Once you have `chatWidgetInstance`:
 
@@ -205,7 +300,9 @@ document.getElementById("my-chat-button").onclick = () => {
 };
 ```
 
-## 🔧 Complete Working Example
+## 🔧 Complete Working Examples
+
+### Single Widget Demo
 
 **👉 See [demo.test.html](./demo.test.html) for a complete, working implementation** that includes:
 
@@ -221,22 +318,78 @@ document.getElementById("my-chat-button").onclick = () => {
 
 **Just open `demo.test.html` in your browser** - it connects to the live widget and demonstrates all features based on the manual instantiation pattern.
 
+### Multi-Widget Demo (New!)
+
+**👉 See [demo.multividget.html](./demo.multividget.html) for a multi-instance demonstration** that shows:
+
+**🚀 You can also see this demo live at [https://blogic-cz.github.io/widget-examles/demo.multividget.html](https://blogic-cz.github.io/widget-examles/demo.multividget.html)**
+
+- ✅ **Three independent widget instances** running simultaneously
+- ✅ **Different positions**: bottom-right, bottom-left, bottom-center
+- ✅ **Mixed trigger modes**: some with default triggers, some with custom triggers only
+- ✅ **Independent state management**: each widget maintains its own conversation history
+- ✅ **Isolated event systems**: events are properly scoped to each instance
+- ✅ **Batch operations**: open/close all widgets, check all widget states
+- ✅ **Real-time status monitoring** for all instances
+
+```html
+<!-- Simple multi-widget setup example -->
+<script>
+  const widget1 = window.BIPWidget.createChatWidget();
+  const widget2 = window.BIPWidget.createChatWidget();
+
+  // Optional: Log the auto-generated instance IDs
+  console.log("Widget 1 ID:", widget1.instanceId);
+  console.log("Widget 2 ID:", widget2.instanceId);
+
+  widget1.processCommand([
+    "init",
+    {
+      token: "YOUR_TOKEN",
+      tenantCode: "YOUR_TENANT",
+      assistantId: "YOUR_ASSISTANT",
+      showDefaultTrigger: true,
+      position: "bottom-right",
+    },
+  ]);
+
+  widget2.processCommand([
+    "init",
+    {
+      token: "YOUR_TOKEN",
+      tenantCode: "YOUR_TENANT",
+      assistantId: "YOUR_ASSISTANT",
+      showDefaultTrigger: false,
+      position: "bottom-left",
+    },
+  ]);
+</script>
+```
+
 ## 💡 Key Benefits
 
-- **🔧 Direct API Control** - Interact with a concrete widget instance.
+- **🔧 Direct API Control** - Interact with concrete widget instances.
 - **📱 Responsive** - Works on desktop and mobile.
 - **🎨 Customizable** - Hide default button, use your own styling.
 - **🧠 Context-aware** - Pass user/page data for better AI responses.
-- **⚡ Flexible Initialization** - Configure the widget exactly as needed at creation time.
+- **⚡ Flexible Initialization** - Configure widgets exactly as needed at creation time.
+- **🚀 Multi-Instance Support** - Run multiple independent widgets on the same page without conflicts.
 
 ## 🛠️ Advanced Usage
 
-For advanced features like event listeners, context search, and dynamic configuration changes, **check the JavaScript section in [demo.test.html](./demo.test.html)**. It demonstrates the direct use of the `chatWidgetInstance`.
+For advanced features like event listeners, context search, dynamic configuration changes, and multi-instance management:
+
+1. **Single Widget:** Check the JavaScript section in [demo.test.html](./demo.test.html)
+2. **Multi-Widget:** Check the JavaScript section in [demo.multividget.html](./demo.multividget.html)
+
+Both demonstrate the direct use of `chatWidgetInstance` for different scenarios.
 
 ## 📞 Need Help?
 
-1. **Start with** [demo.test.html](./demo.test.html) - it's a complete working example of manual instantiation. **(Live version: [https://blogic-cz.github.io/widget-examles/](https://blogic-cz.github.io/widget-examles/))**
-2. **Copy the patterns** you see in the demo file for creating and interacting with `chatWidgetInstance`.
+1. **Start with** the demos:
+   - **Single widget:** [demo.test.html](./demo.test.html) **(Live: [https://blogic-cz.github.io/widget-examles/](https://blogic-cz.github.io/widget-examles/))**
+   - **Multi-widget:** [demo.multividget.html](./demo.multividget.html) **(Live: [https://blogic-cz.github.io/widget-examles/demo.multividget.html](https://blogic-cz.github.io/widget-examles/demo.multividget.html))**
+2. **Copy the patterns** you see in the demo files for creating and interacting with `chatWidgetInstance`.
 3. **Modify** the configuration and context data for your use case.
 
-The API via the widget instance is designed to be straightforward and reliable.
+The API via the widget instance is designed to be straightforward and reliable for both single and multi-instance usage.

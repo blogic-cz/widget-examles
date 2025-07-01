@@ -370,6 +370,9 @@
         ) {
           chatWidgetInstance = widgetFactory.createChatWidget();
 
+          // Log the auto-generated instance ID
+          console.log("Widget instance ID:", chatWidgetInstance.instanceId);
+
           const initialConfig = getAppConfig();
           console.log("initialConfig", initialConfig);
           if (!initialConfig) return; // Stop if token is missing
