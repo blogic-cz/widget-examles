@@ -26,8 +26,10 @@ jobs:
       - name: Create staging directory
         run: mkdir gh-pages-dist
 
-      - name: Copy HTML file
-        run: cp demo.test.html gh-pages-dist/index.html
+      - name: Copy HTML files
+        run: |
+          cp demo.test.html gh-pages-dist/index.html
+          cp demo.multiwidget.html gh-pages-dist/demo.multiwidget.html
 
       - name: Setup Pages
         uses: actions/configure-pages@v4

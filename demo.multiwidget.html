@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BIP Multi-Widget Demo</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+      .controls {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .control-group {
+        margin-bottom: 15px;
+      }
+      button {
+        background: #007cba;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-right: 10px;
+        margin-bottom: 10px;
+      }
+      button:hover {
+        background: #005a87;
+      }
+      button:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+      }
+      .status {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 4px;
+        margin-top: 10px;
+        border-left: 4px solid #007cba;
+      }
+      .instance-group {
+        border: 1px solid #ddd;
+        padding: 15px;
+        margin-bottom: 15px;
+        border-radius: 4px;
+        background: #fafafa;
+      }
+      .instance-group h3 {
+        margin-top: 0;
+        color: #333;
+      }
+      .log {
+        background: #000;
+        color: #0f0;
+        padding: 10px;
+        border-radius: 4px;
+        font-family: monospace;
+        font-size: 12px;
+        max-height: 200px;
+        overflow-y: auto;
+        margin-top: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🚀 BIP Multi-Widget Demo</h1>
+    <p>
+      This demo shows how to create and manage multiple independent BIP widget
+      instances on the same page using the new Context API.
+    </p>
+
+    <div class="controls">
+      <h2>Widget Instance Controls</h2>
+
+      <div class="instance-group">
+        <h3>Instance 1 (Bottom Right)</h3>
+        <div class="control-group">
+          <div style="display: flex; gap: 10px; margin-bottom: 10px">
+            <div style="flex: 1">
+              <label for="token1">Token (JWT):</label>
+              <input
+                type="text"
+                id="token1"
+                placeholder="Token for Widget 1"
+                style="
+                  width: 100%;
+                  padding: 8px;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  margin-top: 5px;
+                "
+              />
+            </div>
+            <div style="flex: 1">
+              <label for="tenantCode1">Tenant Code:</label>
+              <input
+                type="text"
+                id="tenantCode1"
+                placeholder="Tenant Code for Widget 1"
+                style="
+                  width: 100%;
+                  padding: 8px;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  margin-top: 5px;
+                "
+              />
+            </div>
+          </div>
+          <label for="assistantId1">Assistant ID:</label>
+          <input
+            type="text"
+            id="assistantId1"
+            placeholder="Assistant ID for Widget 1"
+            style="
+              width: 100%;
+              padding: 8px;
+              border: 1px solid #ddd;
+              border-radius: 4px;
+              margin: 5px 0 15px 0;
+            "
+          />
+          <button
+            onclick="saveInstanceConfig(1)"
+            style="background-color: #17a2b8; margin-bottom: 10px"
+          >
+            💾 Save Config
+          </button>
+          <br />
+          <button id="init-widget-1">Initialize Widget 1</button>
+          <button id="open-widget-1">Open Widget 1</button>
+          <button id="close-widget-1">Close Widget 1</button>
+          <button id="destroy-widget-1">Destroy Widget 1</button>
+        </div>
+      </div>
+
+      <div class="instance-group">
+        <h3>Instance 2 (Bottom Left)</h3>
+        <div class="control-group">
+          <div style="display: flex; gap: 10px; margin-bottom: 10px">
+            <div style="flex: 1">
+              <label for="token2">Token (JWT):</label>
+              <input
+                type="text"
+                id="token2"
+                placeholder="Token for Widget 2"
+                style="
+                  width: 100%;
+                  padding: 8px;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  margin-top: 5px;
+                "
+              />
+            </div>
+            <div style="flex: 1">
+              <label for="tenantCode2">Tenant Code:</label>
+              <input
+                type="text"
+                id="tenantCode2"
+                placeholder="Tenant Code for Widget 2"
+                style="
+                  width: 100%;
+                  padding: 8px;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  margin-top: 5px;
+                "
+              />
+            </div>
+          </div>
+          <label for="assistantId2">Assistant ID:</label>
+          <input
+            type="text"
+            id="assistantId2"
+            placeholder="Assistant ID for Widget 2"
+            style="
+              width: 100%;
+              padding: 8px;
+              border: 1px solid #ddd;
+              border-radius: 4px;
+              margin: 5px 0 15px 0;
+            "
+          />
+          <button
+            onclick="saveInstanceConfig(2)"
+            style="background-color: #17a2b8; margin-bottom: 10px"
+          >
+            💾 Save Config
+          </button>
+          <br />
+          <button id="init-widget-2">Initialize Widget 2</button>
+          <button id="open-widget-2">Open Widget 2</button>
+          <button id="close-widget-2">Close Widget 2</button>
+          <button id="destroy-widget-2">Destroy Widget 2</button>
+        </div>
+      </div>
+
+      <div class="instance-group">
+        <h3>Instance 3 (Bottom Center)</h3>
+        <div class="control-group">
+          <div style="display: flex; gap: 10px; margin-bottom: 10px">
+            <div style="flex: 1">
+              <label for="token3">Token (JWT):</label>
+              <input
+                type="text"
+                id="token3"
+                placeholder="Token for Widget 3"
+                style="
+                  width: 100%;
+                  padding: 8px;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  margin-top: 5px;
+                "
+              />
+            </div>
+            <div style="flex: 1">
+              <label for="tenantCode3">Tenant Code:</label>
+              <input
+                type="text"
+                id="tenantCode3"
+                placeholder="Tenant Code for Widget 3"
+                style="
+                  width: 100%;
+                  padding: 8px;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  margin-top: 5px;
+                "
+              />
+            </div>
+          </div>
+          <label for="assistantId3">Assistant ID:</label>
+          <input
+            type="text"
+            id="assistantId3"
+            placeholder="Assistant ID for Widget 3"
+            style="
+              width: 100%;
+              padding: 8px;
+              border: 1px solid #ddd;
+              border-radius: 4px;
+              margin: 5px 0 15px 0;
+            "
+          />
+          <button
+            onclick="saveInstanceConfig(3)"
+            style="background-color: #17a2b8; margin-bottom: 10px"
+          >
+            💾 Save Config
+          </button>
+          <br />
+          <button id="init-widget-3">Initialize Widget 3</button>
+          <button id="open-widget-3">Open Widget 3</button>
+          <button id="close-widget-3">Close Widget 3</button>
+          <button id="destroy-widget-3">Destroy Widget 3</button>
+        </div>
+      </div>
+
+      <div class="status" id="status">
+        <strong>Status:</strong>
+        <span id="status-text">Page loaded. Ready to create widgets.</span>
+      </div>
+
+      <div class="log" id="log">
+        <div>
+          Multi-widget demo initialized. Check console for detailed logs.
+        </div>
+      </div>
+    </div>
+
+    <script src="https://chat-widget-test.hc1.blogic.ai/widget.iife.js"></script>
+    <!-- <script src="./dist/widget.iife.js"></script> -->
+
+    <script>
+      // Multi-widget demo with new Context API
+      document.addEventListener("DOMContentLoaded", () => {
+        if (
+          !window.BIPWidget ||
+          typeof window.BIPWidget.createChatWidget !== "function"
+        ) {
+          console.error(
+            "BIPWidget factory not found. Ensure widget.iife.js is loaded correctly."
+          );
+          updateStatus("❌ BIPWidget factory not found!");
+          return;
+        }
+
+        console.log("🚀 BIP Multi-Widget Demo starting...");
+        updateStatus("✅ BIPWidget factory loaded successfully");
+
+        // Load saved configurations
+        loadSavedConfigs();
+
+        // Widget instances storage
+        const widgets = {};
+
+        // Load saved configurations
+        function loadSavedConfigs() {
+          // Load credentials for each instance
+          for (let i = 1; i <= 3; i++) {
+            const savedToken = localStorage.getItem(
+              `bip_multiwidget_token_${i}`
+            );
+            const savedTenantCode = localStorage.getItem(
+              `bip_multiwidget_tenant_code_${i}`
+            );
+            const savedAssistantId = localStorage.getItem(
+              `bip_multiwidget_assistant_${i}`
+            );
+
+            if (savedToken) {
+              document.getElementById(`token${i}`).value = savedToken;
+            }
+            if (savedTenantCode) {
+              document.getElementById(`tenantCode${i}`).value = savedTenantCode;
+            }
+            if (savedAssistantId) {
+              document.getElementById(`assistantId${i}`).value =
+                savedAssistantId;
+            }
+          }
+        }
+
+        // Get configuration for specific instance
+        function getInstanceConfig(instanceNumber) {
+          const token = document.getElementById(`token${instanceNumber}`).value;
+          const tenantCode = document.getElementById(
+            `tenantCode${instanceNumber}`
+          ).value;
+          const assistantId = document.getElementById(
+            `assistantId${instanceNumber}`
+          ).value;
+
+          if (!token || !tenantCode || !assistantId) {
+            alert(
+              `Please configure Token, Tenant Code, and Assistant ID for Widget ${instanceNumber}`
+            );
+            return null;
+          }
+
+          return {
+            token: token,
+            tenantCode: tenantCode,
+            assistantId: assistantId,
+            showDefaultTrigger: true,
+            position: widgetConfigs[instanceNumber].position,
+          };
+        }
+
+        // Widget position configurations
+        const widgetConfigs = {
+          1: { position: "bottom-right" },
+          2: { position: "bottom-left" },
+          3: { position: "bottom-center" },
+        };
+
+        // Logging function
+        function addLog(message) {
+          const log = document.getElementById("log");
+          const div = document.createElement("div");
+          div.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+          log.appendChild(div);
+          log.scrollTop = log.scrollHeight;
+          console.log(message);
+        }
+
+        function updateStatus(message) {
+          document.getElementById("status-text").textContent = message;
+          addLog(`Status: ${message}`);
+        }
+
+        // Initialize widget function
+        function initializeWidget(instanceNumber) {
+          try {
+            if (widgets[instanceNumber]) {
+              addLog(
+                `Widget ${instanceNumber} already exists. Destroying first...`
+              );
+              widgets[instanceNumber].processCommand(["destroy"]);
+            }
+
+            // Create new widget instance - ID is auto-generated
+            const widget = window.BIPWidget.createChatWidget();
+            widgets[instanceNumber] = widget;
+
+            // Log the auto-generated instance ID
+            addLog(
+              `Widget ${instanceNumber} created with ID: ${widget.instanceId}`
+            );
+
+            // Get configuration for this instance
+            const config = getInstanceConfig(instanceNumber);
+            if (!config) return;
+
+            // Initialize with configuration
+            widget.processCommand(["init", config]);
+
+            addLog(`✅ Widget ${instanceNumber} initialized successfully`);
+            updateStatus(`Widget ${instanceNumber} ready`);
+          } catch (error) {
+            addLog(
+              `❌ Error initializing widget ${instanceNumber}: ${error.message}`
+            );
+            console.error(
+              `Widget ${instanceNumber} initialization failed:`,
+              error
+            );
+          }
+        }
+
+        // Set up event listeners for each button
+        document
+          .getElementById("init-widget-1")
+          .addEventListener("click", () => initializeWidget(1));
+        document
+          .getElementById("init-widget-2")
+          .addEventListener("click", () => initializeWidget(2));
+        document
+          .getElementById("init-widget-3")
+          .addEventListener("click", () => initializeWidget(3));
+
+        document
+          .getElementById("open-widget-1")
+          .addEventListener("click", () =>
+            widgets[1]?.processCommand(["open"])
+          );
+        document
+          .getElementById("open-widget-2")
+          .addEventListener("click", () =>
+            widgets[2]?.processCommand(["open"])
+          );
+        document
+          .getElementById("open-widget-3")
+          .addEventListener("click", () =>
+            widgets[3]?.processCommand(["open"])
+          );
+
+        document
+          .getElementById("close-widget-1")
+          .addEventListener("click", () =>
+            widgets[1]?.processCommand(["close"])
+          );
+        document
+          .getElementById("close-widget-2")
+          .addEventListener("click", () =>
+            widgets[2]?.processCommand(["close"])
+          );
+        document
+          .getElementById("close-widget-3")
+          .addEventListener("click", () =>
+            widgets[3]?.processCommand(["close"])
+          );
+
+        document
+          .getElementById("destroy-widget-1")
+          .addEventListener("click", () => {
+            widgets[1]?.processCommand(["destroy"]);
+            delete widgets[1];
+            addLog("Widget 1 destroyed");
+          });
+        document
+          .getElementById("destroy-widget-2")
+          .addEventListener("click", () => {
+            widgets[2]?.processCommand(["destroy"]);
+            delete widgets[2];
+            addLog("Widget 2 destroyed");
+          });
+        document
+          .getElementById("destroy-widget-3")
+          .addEventListener("click", () => {
+            widgets[3]?.processCommand(["destroy"]);
+            delete widgets[3];
+            addLog("Widget 3 destroyed");
+          });
+      });
+
+      // Make saveInstanceConfig available globally
+      window.saveInstanceConfig = function (instanceNumber) {
+        const token = document.getElementById(`token${instanceNumber}`).value;
+        const tenantCode = document.getElementById(
+          `tenantCode${instanceNumber}`
+        ).value;
+        const assistantId = document.getElementById(
+          `assistantId${instanceNumber}`
+        ).value;
+
+        if (!token || !tenantCode || !assistantId) {
+          alert(`Please fill in all fields for Widget ${instanceNumber}`);
+          return;
+        }
+
+        localStorage.setItem(`bip_multiwidget_token_${instanceNumber}`, token);
+        localStorage.setItem(
+          `bip_multiwidget_tenant_code_${instanceNumber}`,
+          tenantCode
+        );
+        localStorage.setItem(
+          `bip_multiwidget_assistant_${instanceNumber}`,
+          assistantId
+        );
+
+        document.getElementById(
+          "status-text"
+        ).textContent = `✅ Widget ${instanceNumber} configuration saved`;
+        const log = document.getElementById("log");
+        const div = document.createElement("div");
+        div.textContent = `[${new Date().toLocaleTimeString()}] Widget ${instanceNumber} configuration saved successfully`;
+        log.appendChild(div);
+        log.scrollTop = log.scrollHeight;
+        console.log(
+          `Widget ${instanceNumber} configuration saved successfully`
+        );
+      };
+    </script>
+  </body>
+</html>

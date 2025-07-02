@@ -320,9 +320,9 @@ document.getElementById("my-chat-button").onclick = () => {
 
 ### Multi-Widget Demo (New!)
 
-**👉 See [demo.multividget.html](./demo.multividget.html) for a multi-instance demonstration** that shows:
+**👉 See [demo.multiwidget.html](./demo.multiwidget.html) for a multi-instance demonstration** that shows:
 
-**🚀 You can also see this demo live at [https://blogic-cz.github.io/widget-examles/demo.multividget.html](https://blogic-cz.github.io/widget-examles/demo.multividget.html)**
+**🚀 You can also see this demo live at [https://blogic-cz.github.io/widget-examles/demo.multiwidget.html](https://blogic-cz.github.io/widget-examles/demo.multiwidget.html)**
 
 - ✅ **Three independent widget instances** running simultaneously
 - ✅ **Different positions**: bottom-right, bottom-left, bottom-center
@@ -380,7 +380,7 @@ document.getElementById("my-chat-button").onclick = () => {
 For advanced features like event listeners, context search, dynamic configuration changes, and multi-instance management:
 
 1. **Single Widget:** Check the JavaScript section in [demo.test.html](./demo.test.html)
-2. **Multi-Widget:** Check the JavaScript section in [demo.multividget.html](./demo.multividget.html)
+2. **Multi-Widget:** Check the JavaScript section in [demo.multiwidget.html](./demo.multiwidget.html)
 
 Both demonstrate the direct use of `chatWidgetInstance` for different scenarios.
 
@@ -388,7 +388,7 @@ Both demonstrate the direct use of `chatWidgetInstance` for different scenarios.
 
 1. **Start with** the demos:
    - **Single widget:** [demo.test.html](./demo.test.html) **(Live: [https://blogic-cz.github.io/widget-examles/](https://blogic-cz.github.io/widget-examles/))**
-   - **Multi-widget:** [demo.multividget.html](./demo.multividget.html) **(Live: [https://blogic-cz.github.io/widget-examles/demo.multividget.html](https://blogic-cz.github.io/widget-examles/demo.multividget.html))**
+   - **Multi-widget:** [demo.multiwidget.html](./demo.multiwidget.html) **(Live: [https://blogic-cz.github.io/widget-examles/demo.multiwidget.html](https://blogic-cz.github.io/widget-examles/demo.multiwidget.html))**
 2. **Copy the patterns** you see in the demo files for creating and interacting with `chatWidgetInstance`.
 3. **Modify** the configuration and context data for your use case.
 
