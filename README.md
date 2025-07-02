@@ -7,7 +7,7 @@ A collection of examples showing how to integrate the BIP chatbot widget into yo
 **View the working demos deployed on GitHub Pages:**
 
 - **Single Widget Demo:** [https://blogic-cz.github.io/widget-examles/](https://blogic-cz.github.io/widget-examles/)
-- **Multi-Widget Demo:** [https://blogic-cz.github.io/widget-examles/demo.multividget.html](https://blogic-cz.github.io/widget-examles/demo.multividget.html)
+- **Multi-Widget Demo:** [https://blogic-cz.github.io/widget-examles/demo.multiwidget.html](https://blogic-cz.github.io/widget-examles/demo.multiwidget.html)
 
 ## 🚀 Quick Start
 
