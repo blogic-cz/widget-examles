@@ -44,9 +44,6 @@ Then, in a subsequent `<script>` tag, create and initialize the widget:
       // Initialize using the command pattern (recommended)
       chatWidgetInstance.processCommand(["init", initialConfig]);
 
-      // Alternative: Direct init method (deprecated but still supported)
-      // chatWidgetInstance.init(initialConfig);
-
       // Example: Open the widget after initialization
       // chatWidgetInstance.processCommand(["open"]);
     } else {
@@ -271,9 +268,6 @@ const config = {
 };
 // Use command pattern (recommended)
 chatWidgetInstance.processCommand(["init", config]);
-
-// Or use direct method (deprecated)
-// chatWidgetInstance.init(config);
 ```
 
 ### Mode 2: Custom Trigger
@@ -290,9 +284,6 @@ const config = {
 };
 // Use command pattern (recommended)
 chatWidgetInstance.processCommand(["init", config]);
-
-// Or use direct method (deprecated)
-// chatWidgetInstance.init(config);
 
 // Then use your own buttons to control the widget via the instance
 document.getElementById("my-chat-button").onclick = () => {
