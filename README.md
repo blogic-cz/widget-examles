@@ -329,6 +329,22 @@ chatWidgetInstance.processCommand([
 ]);
 ```
 
+You can also update the custom CSS at runtime using the `setCustomCss` command:
+
+```js
+chatWidgetInstance.processCommand([
+  "setCustomCss",
+  `
+    .bip-widget-chat-widget {
+      background: #fffbe6;
+    }
+    .bip-widget-chat-header {
+      color: #f656cb;
+    }
+  `,
+]);
+```
+
 ## 🔧 Complete Working Examples
 
 ### Single Widget Demo
