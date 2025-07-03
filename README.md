@@ -291,6 +291,44 @@ document.getElementById("my-chat-button").onclick = () => {
 };
 ```
 
+## 🎨 Custom CSS Styling (Shadow DOM)
+
+You can inject your own CSS into the widget's Shadow DOM using the `customCss` property in the config. The following CSS classes are always present on key widget elements and can be targeted for advanced custom styling:
+
+| CSS Class                         | Description                        |
+| --------------------------------- | ---------------------------------- |
+| `.bip-widget-chat-widget`         | Main widget container              |
+| `.bip-widget-chat-window`         | Wrapper for the entire chat window |
+| `.bip-widget-trigger-button`      | Default floating trigger button    |
+| `.bip-widget-assistant-message`   | Assistant message block            |
+| `.bip-widget-user-message`        | User message block                 |
+| `.bip-widget-chat-input`          | Message input area                 |
+| `.bip-widget-chat-messages`       | Container for all chat messages    |
+| `.bip-widget-chat-header`         | Chat window header                 |
+| `.bip-widget-message-bubble`      | Individual message bubble          |
+| `.bip-widget-message-suggestions` | Block with message suggestions     |
+| `.bip-widget-typing-indicator`    | "Assistant is typing" indicator    |
+
+You can use these classes in your `customCss` to override styles. For example:
+
+```js
+chatWidgetInstance.processCommand([
+  "init",
+  {
+    // ...
+    customCss: `
+      .bip-widget-chat-widget {
+        background: #fafafa;
+        border-radius: 20px;
+      }
+      .bip-widget-trigger-button {
+        box-shadow: 0 0 10px #f656cb;
+      }
+    `,
+  },
+]);
+```
+
 ## 🔧 Complete Working Examples
 
 ### Single Widget Demo

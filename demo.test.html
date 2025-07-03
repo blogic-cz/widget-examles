@@ -173,6 +173,26 @@
       </div>
 
       <div class="demo-section">
+        <h3>🎨 Custom CSS for Widget (live demo)</h3>
+        <textarea
+          id="customCssInput"
+          rows="4"
+          style="width: 100%; font-family: monospace; resize: vertical"
+          placeholder=".bip-widget-chat-widget { width: 80vw !important; max-width: 600px; background: red; }"
+        ></textarea>
+        <button
+          onclick="setCustomCssFromDemo()"
+          style="background-color: #f656cb; color: white"
+        >
+          Apply Custom CSS
+        </button>
+        <div style="font-size: 12px; color: #888; margin-top: 4px">
+          This CSS will be injected into the widget's Shadow DOM. Target
+          <code>.bip-widget-chat-widget</code> for the main container.
+        </div>
+      </div>
+
+      <div class="demo-section">
         <h3>Widget Status</h3>
         <div id="status" class="status warning">⏳ Initializing widget...</div>
       </div>
@@ -676,6 +696,15 @@
       // --- Widget position button handler ---
       function setWidgetPosition(pos) {
         processWidgetCommand("setPosition", pos);
+      }
+
+      function setCustomCssFromDemo() {
+        const customCss = document.getElementById("customCssInput").value;
+        if (chatWidgetInstance) {
+          processWidgetCommand("setCustomCss", customCss);
+        } else {
+          alert("Widget instance not available.");
+        }
       }
     </script>
   </body>
